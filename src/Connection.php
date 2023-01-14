@@ -28,25 +28,25 @@ class Connection
      * @throws ClientException
      * @throws ServerException
      */
-    public function getRequest(): ResponseInterface
+    public function getRequest($method): ResponseInterface
     {
         $this->checkLogin();
         $client = new Client();
-        $request = $this->createRequest('GET');
+        $request = $this->createRequest('GET', $method);
 
         return $client->send($request);
     }
 
-    public function postRequest(AbstractEmail $emailInterfaces): ResponseInterface
+    public function postRequest(string $method, AbstractEmail $emailInterfaces): ResponseInterface
     {
         $this->checkLogin();
         $client = new Client();
-        $request = $this->createRequest('POST', $emailInterfaces);
+        $request = $this->createRequest('POST', $method, $emailInterfaces);
 
         return $client->send($request);
     }
 
-    private function createRequest(string $method, ?SmsEmail $smsInterfaces = null): Request
+    private function createRequest(string $method, string $method, ?SmsEmail $smsInterfaces = null): Request
     {
 
         $headers = ['Accept' => 'application/json',];
@@ -57,7 +57,7 @@ class Connection
 
         return new Request(
             $method,
-            $this->getUrl(),
+            $this->getUrl($method),
             null,
             [
                 'headers' => $headers,
@@ -83,7 +83,7 @@ class Connection
     /**
      * @return string
      */
-    private function getUrl(): string
+    private function getUrl(string $method): string
     {
         $this->url = str_replace('%method%', $method, self::URL);
         $url_parts = parse_url($this->url);
