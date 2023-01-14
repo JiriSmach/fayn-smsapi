@@ -9,13 +9,18 @@ use Psr\Http\Message\ResponseInterface;
 class Connection
 {
     private string $url;
-    private string $apiToken;
+    private string $username;
+    private string $password;
+    private ?string $apiToken = null;
     private array $urlParams = [];
     private const URL = 'https://smsapi.fayn.cz/mex/%method%';
 
     public function __construct(
-        string $method
+        string $username,
+        string $password
     ) {
+        $this->username = $username;
+        $this->password = $password;
     }
 
     /**
@@ -25,6 +30,7 @@ class Connection
      */
     public function getRequest(): ResponseInterface
     {
+        $this->checkLogin();
         $client = new Client();
         $request = $this->createRequest('GET');
 
@@ -33,6 +39,7 @@ class Connection
 
     public function postRequest(AbstractEmail $emailInterfaces): ResponseInterface
     {
+        $this->checkLogin();
         $client = new Client();
         $request = $this->createRequest('POST', $emailInterfaces);
 
@@ -57,6 +64,11 @@ class Connection
                 'body' => $body,
             ]
         );
+    }
+
+    private function chceckLogin(): void
+    {
+        //TODO: overeni přihlášení 
     }
 
     /**
