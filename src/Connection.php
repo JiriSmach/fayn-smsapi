@@ -59,4 +59,28 @@ class Connection
             ]
         );
     }
+
+    /**
+     * @param array $urlParams
+     * @return void
+     */
+    public function setUrlParams(array $urlParams): void
+    {
+        $this->urlParams = $urlParams;
+    }
+
+    /**
+     * @return string
+     */
+    private function getUrl(): string
+    {
+        $url_parts = parse_url($this->url);
+        if (isset($url_parts['query'])) {
+            parse_str($url_parts['query'], $this->urlParams);
+        }
+
+        $url_parts['query'] = http_build_query($this->urlParams);
+
+        return $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'] . '?' . $url_parts['query'];
+    }
 }
