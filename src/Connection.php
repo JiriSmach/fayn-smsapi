@@ -16,7 +16,6 @@ class Connection
     public function __construct(
         string $method
     ) {
-        $this->url = str_replace('%method%', $method, self::URL);;
     }
 
     /**
@@ -74,6 +73,7 @@ class Connection
      */
     private function getUrl(): string
     {
+        $this->url = str_replace('%method%', $method, self::URL);
         $url_parts = parse_url($this->url);
         if (isset($url_parts['query'])) {
             parse_str($url_parts['query'], $this->urlParams);
