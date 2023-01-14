@@ -40,13 +40,23 @@ class Connection
         return $client->send($request);
     }
 
-    private function createRequest(string $method, ?AbstractEmail $emailInterfaces = null): Request
+    private function createRequest(string $method, ?SmsEmail $smsInterfaces = null): Request
     {
+
+        $headers = ['Accept' => 'application/json',];
+        if ($this->token) {
+            $headers['Authorization'] = 'Bearer ' . $this->token;
+        }
+        $body = $smsInterfaces ? $smsInterfaces->getBodyJson() : null;
+
         return new Request(
             $method,
             $this->getUrl(),
             null,
-            $emailInterfaces ? $emailInterfaces->getJson() : null
+            [
+                'headers' => $headers,
+                'body' => $body,
+            ]
         );
     }
 }
