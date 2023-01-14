@@ -11,7 +11,7 @@ class Connection
     private string $url;
     private string $apiToken;
     private array $urlParams = [];
-    private const URL = 'https://smsapi.fayn.cz/mex//%method%';
+    private const URL = 'https://smsapi.fayn.cz/mex/%method%';
 
     public function __construct(
         string $method
