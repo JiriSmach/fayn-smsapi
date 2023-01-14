@@ -1,0 +1,34 @@
+{
+    "name": "jirismach/fayn-smsapi",
+    "description": "FAYN SMS API",
+    "authors": [
+        {
+            "name": "Jiri Smach",
+            "email": "jiri.smach@mensa.cz"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.5"
+    },
+    "config": {
+        "platform": {
+            "php": "8.2"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    },
+    "autoload": {
+        "psr-4": {
+            "JiriSmach\\FaynSmsApi\\": "src/"
+        },
+        "exclude-from-classmap": [
+            "/tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JiriSmach\\Tests\\FaynSmsApi\\": "tests/"
+        }
+    }
+}
