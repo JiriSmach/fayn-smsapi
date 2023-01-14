@@ -4,6 +4,7 @@ namespace JiriSmach\FaynSmsApi;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use JiriSmach\FaynSmsApi\Request\LoginRequest;
 use Psr\Http\Message\ResponseInterface;
 
 class Connection
@@ -11,7 +12,7 @@ class Connection
     private string $url;
     private string $username;
     private string $password;
-    private ?string $apiToken = null;
+    private ?string $token = null;
     private array $urlParams = [];
     private const URL = 'https://smsapi.fayn.cz/mex/%method%';
 
@@ -37,7 +38,7 @@ class Connection
         return $client->send($request);
     }
 
-    public function postRequest(string $method, AbstractEmail $emailInterfaces): ResponseInterface
+    public function postRequest(string $method, RequestInterface $emailInterfaces): ResponseInterface
     {
         $this->checkLogin();
         $client = new Client();
@@ -46,17 +47,23 @@ class Connection
         return $client->send($request);
     }
 
-    private function createRequest(string $method, string $method, ?SmsEmail $smsInterfaces = null): Request
+    /**
+     * @param string $requestMethod
+     * @param string $method
+     * @param RequestInterface|null $smsInterfaces
+     * @return Request
+     */
+    private function createRequest(string $requestMethod, string $method, ?RequestInterface $requestInterface = null): Request
     {
 
         $headers = ['Accept' => 'application/json',];
         if ($this->token) {
             $headers['Authorization'] = 'Bearer ' . $this->token;
         }
-        $body = $smsInterfaces ? $smsInterfaces->getBodyJson() : null;
+        $body = $requestInterface ? $requestInterface->getBodyJson() : null;
 
         return new Request(
-            $method,
+            $requestMethod,
             $this->getUrl($method),
             null,
             [
@@ -66,21 +73,34 @@ class Connection
         );
     }
 
-    private function chceckLogin(): void
-    {
-        //TODO: overeni přihlášení 
-    }
-
     /**
-     * @param array $urlParams
      * @return void
      */
-    public function setUrlParams(array $urlParams): void
+    private function checkLogin(): void
     {
-        $this->urlParams = $urlParams;
+        if (is_null($this->token)) {
+            $client = new Client();
+
+            $loginRequest = new LoginRequest($this->username, $this->password);
+            $request = $this->createRequest('POST', '/login', $loginRequest);
+
+            $client->send($request);
+        }
+        //TODO: overeni přihlášení a dostani tokenu
     }
 
     /**
+     * @param string $key
+     * @param string $urlParam
+     * @return void
+     */
+    public function addUrlParams(string $key, string $urlParam): void
+    {
+        $this->urlParams[$key] = $urlParam;
+    }
+
+    /**
+     * @param string $method
      * @return string
      */
     private function getUrl(string $method): string

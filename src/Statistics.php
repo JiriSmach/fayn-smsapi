@@ -2,11 +2,13 @@
 
 namespace JiriSmach\FaynSmsApi;
 
+use DateTimeInterface;
+
 class Statistics
 {
     private Connection $connection;
 
-    public funxtion __construct(
+    public function __construct(
         Connection $connection
     ) {
         $this->connection = $connection;
@@ -14,5 +16,19 @@ class Statistics
 
     public function getStatistics(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?int $userId = null): array
     {
+        $method = 'statistics';
+        if ($userId) {
+            $method .= '/' . $userId;
+        }
+        if ($from) {
+            $this->connection->addUrlParams('creditHistoryFrom', $from->format(DateTimeInterface::ATOM));
+        }
+        if ($to) {
+            $this->connection->addUrlParams('creditHistoryTo', $to->format(DateTimeInterface::ATOM));
+        }
+
+        $this->connection->getRequest($method);
+        // todo: dostat z odpovedi data a vytvorit tridu
+        return [];
     }
 }
