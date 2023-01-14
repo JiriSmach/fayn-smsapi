@@ -11,4 +11,8 @@ class Statistics
     ) {
         $this->connection = $connection;
     }
+
+    public function getStatistics(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?int $userId = null): array
+    {
+    }
 }
