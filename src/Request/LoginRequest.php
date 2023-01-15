@@ -27,4 +27,9 @@ class LoginRequest implements RequestInterface
     {
         return [];
     }
+
+    public function getMethod(): string
+    {
+        return 'login';
+    }
 }
