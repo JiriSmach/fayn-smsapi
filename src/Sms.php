@@ -4,7 +4,8 @@ namespace JiriSmach\FaynSmsApi;
 
 use DateTimeInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use JiriSmach\FaynSmsApi\Request\StatisticsRequest;
+use JiriSmach\FaynSmsApi\Request\SmsGetRequest;
+use JiriSmach\FaynSmsApi\Request\SmsSendRequest;
 
 class Sms
 {
@@ -22,19 +23,44 @@ class Sms
      * @throws Exceptions\LoginException
      * @throws GuzzleException
      */
-    public function sendSms(SmsInterface $smsInterface)
+    public function sendSms(SmsInterface $smsInterface): void
     {
-        $smsRequest = new SmsRequest();
+        $smsRequest = new SmsSendRequest($smsInterface);
         $this->connection->postRequest($smsRequest);
     }
 
-    public function getSms()
+    /**
+     * @param null|string $messageId
+     * @param null|string $externalId
+     * @throws Exceptions\LoginException
+     * @throws GuzzleException
+     */
+    public function getSms(?string $messageId = null, ?string $externalId = null): SmsData
     {
-        $this->connection->getRequest();
+        $smsRequest = new SmsGetRequest($messageId, $externalId);
+        $this->connection->getRequest($smsRequest);
+
+        $smsData = new SmsData();
+        return $smsData;
     }
 
-    public function getSmsList()
+    /**
+     * @param DateTimeInterface|null $from
+     * @param DateTimeInterface|null $to
+     * @return SmsData[]
+     * @throws Exceptions\LoginException
+     * @throws GuzzleException
+     */
+    public function getSmsList(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
-        $this->connection->getRequest();
+        $smsRequest = new SmsGetRequest();
+        if ($from) {
+            $smsRequest->addUrlParam('timeFrom', $from->format(DateTimeInterface::ATOM));
+        }
+        if ($to) {
+            $smsRequest->addUrlParam('timeTo', $to->format(DateTimeInterface::ATOM));
+        }
+        $this->connection->getRequest($smsRequest);
+        return [];
     }
 }

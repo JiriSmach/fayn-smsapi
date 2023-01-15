@@ -88,8 +88,10 @@ class Connection
      */
     private function createRequest(string $requestMethod, RequestInterface $requestInterface): Request
     {
-
-        $headers = ['Accept' => 'application/json',];
+        $headers = [
+            'Accept' => 'application/json',
+            'content-type' => 'application/json'
+        ];
         if ($this->token) {
             $headers['Authorization'] = 'Bearer ' . $this->token;
         }
@@ -98,11 +100,8 @@ class Connection
         return new Request(
             $requestMethod,
             $this->getUrl($requestInterface),
-            [],
-            [
-                'headers' => $headers,
-                'body' => $body,
-            ]
+            $headers,
+            $body
         );
     }
 
