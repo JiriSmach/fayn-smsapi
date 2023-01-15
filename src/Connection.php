@@ -12,7 +12,6 @@ class Connection
     private string $username;
     private string $password;
     private ?string $token = null;
-    private array $urlParams = [];
     private const URL = 'https://smsapi.fayn.cz/mex/%method%';
 
     public function __construct(
@@ -28,20 +27,20 @@ class Connection
      * @throws ClientException
      * @throws ServerException
      */
-    public function getRequest($method): ResponseInterface
+    public function getRequest(string $method, RequestInterface $requestInterface): ResponseInterface
     {
         $this->checkLogin();
         $client = new Client();
-        $request = $this->createRequest('GET', $method);
+        $request = $this->createRequest('GET', $method, $requestInterface);
 
         return $client->send($request);
     }
 
-    public function postRequest(string $method, RequestInterface $emailInterfaces): ResponseInterface
+    public function postRequest(string $method, RequestInterface $requestInterface): ResponseInterface
     {
         $this->checkLogin();
         $client = new Client();
-        $request = $this->createRequest('POST', $method, $emailInterfaces);
+        $request = $this->createRequest('POST', $method, $requestInterfaces);
 
         return $client->send($request);
     }
@@ -63,7 +62,7 @@ class Connection
 
         return new Request(
             $requestMethod,
-            $this->getUrl($method),
+            $this->getUrl($method, $requestInterface->getUrlParams),
             null,
             [
                 'headers' => $headers,
@@ -102,15 +101,15 @@ class Connection
      * @param string $method
      * @return string
      */
-    private function getUrl(string $method): string
+    private function getUrl(string $method, array $urlParams = []): string
     {
         $url = str_replace('%method%', $method, self::URL);
         $url_parts = parse_url($url);
         if (isset($url_parts['query'])) {
-            parse_str($url_parts['query'], $this->urlParams);
+            parse_str($url_parts['query'], $urlParams);
         }
 
-        $url_parts['query'] = http_build_query($this->urlParams);
+        $url_parts['query'] = http_build_query($urlParams);
 
         return $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'] . '?' . $url_parts['query'];
     }
