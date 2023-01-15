@@ -4,6 +4,7 @@ namespace JiriSmach\FaynSmsApi;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use JiriSmach\FaynSmsApi\Exceptions\LoginException;
 use JiriSmach\FaynSmsApi\Request\LoginRequest;
 use Psr\Http\Message\ResponseInterface;
 
@@ -23,6 +24,7 @@ class Connection
     }
 
     /**
+     * @param RequestInterface $requestInterface
      * @return ResponseInterface
      * @throws ClientException
      * @throws ServerException
@@ -36,19 +38,42 @@ class Connection
         return $client->send($request);
     }
 
+    /**
+     * @param RequestInterface $requestInterface
+     * @return ResponseInterface
+     * @throws ClientException
+     * @throws ServerException
+     */
     public function postRequest(RequestInterface $requestInterface): ResponseInterface
     {
         $this->checkLogin();
         $client = new Client();
-        $request = $this->createRequest('POST', $requestInterfaces);
+        $request = $this->createRequest('POST', $requestInterface);
+
+        return $client->send($request);
+    }
+
+    /**
+     * @param RequestInterface $requestInterface
+     * @return ResponseInterface
+     * @throws ClientException
+     * @throws ServerException
+     */
+    public function patchRequest(RequestInterface $requestInterface): ResponseInterface
+    {
+        $this->checkLogin();
+        $client = new Client();
+        $request = $this->createRequest('PATCH', $requestInterface);
 
         return $client->send($request);
     }
 
     /**
      * @param string $requestMethod
-     * @param string $method
-     * @param RequestInterface|null $smsInterfaces
+     * @param RequestInterface $smsInterfaces
+     * @return ResponseInterface
+     * @throws ClientException
+     * @throws ServerException
      * @return Request
      */
     private function createRequest(string $requestMethod, RequestInterface $requestInterface): Request
@@ -73,6 +98,9 @@ class Connection
 
     /**
      * @return void
+     * @throws ClientException
+     * @throws ServerException
+     * @throws LoginException
      */
     private function checkLogin(): void
     {
@@ -80,11 +108,25 @@ class Connection
             $client = new Client();
 
             $loginRequest = new LoginRequest($this->username, $this->password);
-            $request = $this->createRequest('POST', '/login', $loginRequest);
+            $request = $this->createRequest('POST', $loginRequest);
 
-            $client->send($request);
+            $response = $client->send($request);
+            if ($response->getStatusCode() === 200) {
+                $responseArray = \GuzzleHttp\json_decode($response->getBody(), true);
+                if (isset($responseArray['token'])) {
+                    $this->token = $responseArray['token'];
+                } else {
+                    $message = 'Token error';
+                    throw new LoginException($message);
+                }
+            } else {
+                $message = 'Login error';
+                if (isset($responseArray['message'])) {
+                    $message .= ': ' . $responseArray['message'];
+                }
+                throw new LoginException($message, $response->getStatusCode());
+            }
         }
-        //TODO: overeni přihlášení a dostani tokenu
     }
 
     /**
@@ -95,11 +137,12 @@ class Connection
     {
         $url = str_replace('%method%', $requestInterface->getMethod(), self::URL);
         $url_parts = parse_url($url);
+        $params = $requestInterface->getUrlParams();
         if (isset($url_parts['query'])) {
-            parse_str($url_parts['query'], $requestInterface->getUrlParams());
+            parse_str($url_parts['query'], $params);
         }
 
-        $url_parts['query'] = http_build_query($urlParams);
+        $url_parts['query'] = http_build_query($params);
 
         return $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'] . '?' . $url_parts['query'];
     }

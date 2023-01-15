@@ -3,6 +3,7 @@
 namespace JiriSmach\FaynSmsApi;
 
 use DateTimeInterface;
+use JiriSmach\FaynSmsApi\Request\StatisticsRequest;
 
 class Statistics
 {
@@ -16,19 +17,15 @@ class Statistics
 
     public function getStatistics(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?int $userId = null): array
     {
-        $method = 'statistics';
-        $statisticsRequest = new StatisticsRequest();
-        if ($userId) {
-            $method .= '/' . $userId;
-        }
+        $statisticsRequest = new StatisticsRequest($userId);
         if ($from) {
-            $statisticsRequest->addParam('creditHistoryFrom', $from->format(DateTimeInterface::ATOM));
+            $statisticsRequest->addUrlParam('creditHistoryFrom', $from->format(DateTimeInterface::ATOM));
         }
         if ($to) {
-            $statisticsRequest->addParams('creditHistoryTo', $to->format(DateTimeInterface::ATOM));
+            $statisticsRequest->addUrlParam('creditHistoryTo', $to->format(DateTimeInterface::ATOM));
         }
 
-        $this->connection->getRequest($method, $statisticsRequest);
+        $this->connection->getRequest($statisticsRequest);
         // todo: dostat z odpovedi data a vytvorit tridu
         return [];
     }
