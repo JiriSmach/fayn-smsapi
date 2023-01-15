@@ -27,20 +27,20 @@ class Connection
      * @throws ClientException
      * @throws ServerException
      */
-    public function getRequest(string $method, RequestInterface $requestInterface): ResponseInterface
+    public function getRequest(RequestInterface $requestInterface): ResponseInterface
     {
         $this->checkLogin();
         $client = new Client();
-        $request = $this->createRequest('GET', $method, $requestInterface);
+        $request = $this->createRequest('GET', $requestInterface);
 
         return $client->send($request);
     }
 
-    public function postRequest(string $method, RequestInterface $requestInterface): ResponseInterface
+    public function postRequest(RequestInterface $requestInterface): ResponseInterface
     {
         $this->checkLogin();
         $client = new Client();
-        $request = $this->createRequest('POST', $method, $requestInterfaces);
+        $request = $this->createRequest('POST', $requestInterfaces);
 
         return $client->send($request);
     }
@@ -51,18 +51,18 @@ class Connection
      * @param RequestInterface|null $smsInterfaces
      * @return Request
      */
-    private function createRequest(string $requestMethod, string $method, ?RequestInterface $requestInterface = null): Request
+    private function createRequest(string $requestMethod, RequestInterface $requestInterface): Request
     {
 
         $headers = ['Accept' => 'application/json',];
         if ($this->token) {
             $headers['Authorization'] = 'Bearer ' . $this->token;
         }
-        $body = $requestInterface ? $requestInterface->getBodyJson() : null;
+        $body = $requestInterface->getBodyJson();
 
         return new Request(
             $requestMethod,
-            $this->getUrl($method, $requestInterface->getUrlParams()),
+            $this->getUrl($requestInterface),
             null,
             [
                 'headers' => $headers,
@@ -88,25 +88,15 @@ class Connection
     }
 
     /**
-     * @param string $key
-     * @param string $urlParam
-     * @return void
-     */
-    public function addUrlParams(string $key, string $urlParam): void
-    {
-        $this->urlParams[$key] = $urlParam;
-    }
-
-    /**
-     * @param string $method
+     * @param RequestInterface $requestInterface
      * @return string
      */
-    private function getUrl(string $method, array $urlParams = []): string
+    private function getUrl(RequestInterface $requestInterface): string
     {
-        $url = str_replace('%method%', $method, self::URL);
+        $url = str_replace('%method%', $requestInterface->getMethod(), self::URL);
         $url_parts = parse_url($url);
         if (isset($url_parts['query'])) {
-            parse_str($url_parts['query'], $urlParams);
+            parse_str($url_parts['query'], $requestInterface->getUrlParams());
         }
 
         $url_parts['query'] = http_build_query($urlParams);
