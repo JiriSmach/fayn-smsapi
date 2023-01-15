@@ -5,4 +5,5 @@ namespace JiriSmach\FaynSmsApi;
 interface RequestInterface
 {
     public function getBodyJson(): string;
+    public function getUrlParams(): array;
 }
