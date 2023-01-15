@@ -20,14 +20,15 @@ class Statistics
         if ($userId) {
             $method .= '/' . $userId;
         }
+        $params = [];
         if ($from) {
-            $this->connection->addUrlParams('creditHistoryFrom', $from->format(DateTimeInterface::ATOM));
+            $params['creditHistoryFrom'] = $from->format(DateTimeInterface::ATOM);
         }
         if ($to) {
-            $this->connection->addUrlParams('creditHistoryTo', $to->format(DateTimeInterface::ATOM));
+            $params['creditHistoryTo'] = $to->format(DateTimeInterface::ATOM);
         }
 
-        $this->connection->getRequest($method);
+        $this->connection->getRequest($method, $params);
         // todo: dostat z odpovedi data a vytvorit tridu
         return [];
     }
