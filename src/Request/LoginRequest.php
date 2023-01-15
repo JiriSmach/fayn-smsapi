@@ -22,4 +22,9 @@ class LoginRequest implements RequestInterface
             'password' => $this->password
         ]);
     }
+
+    public function getUrlParams(): array
+    {
+        return [];
+    }
 }
