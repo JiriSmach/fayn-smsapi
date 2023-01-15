@@ -2,6 +2,7 @@
 
 namespace JiriSmach\FaynSmsApi\Request;
 
+use GuzzleHttp\Utils;
 use JiriSmach\FaynSmsApi\RequestInterface;
 
 class LoginRequest implements RequestInterface
@@ -15,9 +16,12 @@ class LoginRequest implements RequestInterface
         $this->password = $password;
     }
 
+    /**
+     * @return string
+     */
     public function getBodyJson(): string
     {
-        return \GuzzleHttp\json_encode([
+        return Utils::jsonEncode([
             'username' => $this->username,
             'password' => $this->password
         ]);

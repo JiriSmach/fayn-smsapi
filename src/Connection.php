@@ -3,7 +3,11 @@
 namespace JiriSmach\FaynSmsApi;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Utils;
 use JiriSmach\FaynSmsApi\Exceptions\LoginException;
 use JiriSmach\FaynSmsApi\Request\LoginRequest;
 use Psr\Http\Message\ResponseInterface;
@@ -26,8 +30,10 @@ class Connection
     /**
      * @param RequestInterface $requestInterface
      * @return ResponseInterface
+     * @throws GuzzleException
      * @throws ClientException
      * @throws ServerException
+     * @throws LoginException
      */
     public function getRequest(RequestInterface $requestInterface): ResponseInterface
     {
@@ -41,8 +47,10 @@ class Connection
     /**
      * @param RequestInterface $requestInterface
      * @return ResponseInterface
+     * @throws GuzzleException
      * @throws ClientException
      * @throws ServerException
+     * @throws LoginException
      */
     public function postRequest(RequestInterface $requestInterface): ResponseInterface
     {
@@ -56,8 +64,10 @@ class Connection
     /**
      * @param RequestInterface $requestInterface
      * @return ResponseInterface
+     * @throws GuzzleException
      * @throws ClientException
      * @throws ServerException
+     * @throws LoginException
      */
     public function patchRequest(RequestInterface $requestInterface): ResponseInterface
     {
@@ -70,8 +80,8 @@ class Connection
 
     /**
      * @param string $requestMethod
-     * @param RequestInterface $smsInterfaces
-     * @return ResponseInterface
+     * @param RequestInterface $requestInterface
+     * @return Request
      * @throws ClientException
      * @throws ServerException
      * @return Request
@@ -88,7 +98,7 @@ class Connection
         return new Request(
             $requestMethod,
             $this->getUrl($requestInterface),
-            null,
+            [],
             [
                 'headers' => $headers,
                 'body' => $body,
@@ -101,6 +111,7 @@ class Connection
      * @throws ClientException
      * @throws ServerException
      * @throws LoginException
+     * @throws GuzzleException
      */
     private function checkLogin(): void
     {
@@ -112,7 +123,7 @@ class Connection
 
             $response = $client->send($request);
             if ($response->getStatusCode() === 200) {
-                $responseArray = \GuzzleHttp\json_decode($response->getBody(), true);
+                $responseArray = Utils::jsonDecode($response->getBody()->getContents(), true);
                 if (isset($responseArray['token'])) {
                     $this->token = $responseArray['token'];
                 } else {
