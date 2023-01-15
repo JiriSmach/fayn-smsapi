@@ -9,7 +9,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class Connection
 {
-    private string $url;
     private string $username;
     private string $password;
     private ?string $token = null;
@@ -105,8 +104,8 @@ class Connection
      */
     private function getUrl(string $method): string
     {
-        $this->url = str_replace('%method%', $method, self::URL);
-        $url_parts = parse_url($this->url);
+        $url = str_replace('%method%', $method, self::URL);
+        $url_parts = parse_url($url);
         if (isset($url_parts['query'])) {
             parse_str($url_parts['query'], $this->urlParams);
         }
