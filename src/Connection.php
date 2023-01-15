@@ -62,7 +62,7 @@ class Connection
 
         return new Request(
             $requestMethod,
-            $this->getUrl($method, $requestInterface->getUrlParams),
+            $this->getUrl($method, $requestInterface->getUrlParams()),
             null,
             [
                 'headers' => $headers,
