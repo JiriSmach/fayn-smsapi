@@ -29,9 +29,12 @@ class SmsGetRequest extends SmsRequest
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getUrlParams(): array
     {
-        return [];
+        return $this->urlParams;
     }
 
     public function getBodyJson(): string
