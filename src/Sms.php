@@ -53,13 +53,7 @@ class Sms
      */
     public function getSmsList(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
-        $smsRequest = new SmsGetRequest();
-        if ($from) {
-            $smsRequest->addUrlParam('timeFrom', $from->format(DateTimeInterface::ATOM));
-        }
-        if ($to) {
-            $smsRequest->addUrlParam('timeTo', $to->format(DateTimeInterface::ATOM));
-        }
+        $smsRequest = new SmsGetListRequest($from, $to);
         $this->connection->getRequest($smsRequest);
         return [];
     }
