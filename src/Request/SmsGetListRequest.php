@@ -1,14 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
 
+use DateTimeInterface;
+
 class SmsGetListRequest extends SmsRequest
 {
-    private ?string $messageId;
-    private ?string $externalId;
+    private ?DateTimeInterface $datetimeTo;
+    private ?DateTimeInterface $datetimeFrom;
 
-    public function __construct(?string $messageId = null, ?string $externalId = null)
+    public function __construct(?DateTimeInterface $datetimeTo = null, ?DateTimeInterface $datetimeTo = null)
     {
+        $this->datetimeFrom = $datetimeFrom;
+        $this->datetimeTo = $datetimeTo;
     }
 
     public function getMethod(): string
@@ -21,7 +25,15 @@ class SmsGetListRequest extends SmsRequest
      */
     public function getUrlParams(): array
     {
-        return [];
+        $params = [];
+        if ($this->datetimeFrom) {
+            $params['timeFrom'] = $this->datetimeFrom->format(DateTimeInterface::ATOM);
+        }
+        if ($this->datetimeTo) {
+            $params['timeTo'] = $this->datetimeTo->format(DateTimeInterface::ATOM);
+        }
+        
+        return $params;
     }
 
     public function getBodyJson(): string
