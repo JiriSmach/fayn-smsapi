@@ -6,7 +6,6 @@ class SmsGetRequest extends SmsRequest
 {
     private ?string $messageId;
     private ?string $externalId;
-    private array $urlParams = [];
     public function __construct(?string $messageId = null, ?string $externalId = null)
     {
         $this->messageId = $messageId;
@@ -20,13 +19,7 @@ class SmsGetRequest extends SmsRequest
         } elseif ($this->externalId) {
             return parent::getMethod() . '/by-external-id/' . $this->externalId;
         }
-        return parent::getMethod() . '/list';
-    }
-
-    public function addUrlParam(string $key, string $param): self
-    {
-        $this->urlParams[$key] = $param;
-        return $this;
+        throw new \Exception('Need some ID');
     }
 
     /**
@@ -34,7 +27,7 @@ class SmsGetRequest extends SmsRequest
      */
     public function getUrlParams(): array
     {
-        return $this->urlParams;
+        return [];
     }
 
     public function getBodyJson(): string
