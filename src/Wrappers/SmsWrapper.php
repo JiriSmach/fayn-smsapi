@@ -19,6 +19,7 @@ class SmsWrapper implements SmsInterface
     private string $sendAt = '';
     private string $status = '';
     private string $deliveredAt = '';
+    private string $receivedAt = '';
     private bool $read = false;
     private Numbers $numberHelper;
 
@@ -114,6 +115,12 @@ class SmsWrapper implements SmsInterface
         return $this;
     }
 
+    public function setReceivedAt(string $receivedAt): self
+    {
+        $this->receivedAt = $receivedAt;
+        return $this;
+    }
+
     public function setRead(bool $read): self
     {
         $this->read = $read;
@@ -168,6 +175,11 @@ class SmsWrapper implements SmsInterface
     public function getDeliveredAt(): string
     {
         return $this->deliveredAt;
+    }
+
+    public function getReceivedAt(): string
+    {
+        return $this->receivedAt;
     }
 
     public function getRead(): bool

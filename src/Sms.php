@@ -72,16 +72,16 @@ class Sms
     private function createSmsFromResponse(array $data): SmsInterface
     {
         $smsWrapper = new SmsWrapper();
-        $smsWrapper->setMessageId($data['messageId']);
-        $smsWrapper->setId($data['externalId']);
-        $smsWrapper->setSender($data['aNumber']);
-        $smsWrapper->setTextId($data['textId']);
-        $smsWrapper->setReceiver($data['bNumber']);
-        $smsWrapper->setText($data['text']);
-        $smsWrapper->setPriority($data['priority']);
-        $smsWrapper->setSendAt($data['sendAt']);
-        $smsWrapper->setStatus($data['status']);
-        $smsWrapper->setDeliveredAt( $data['deliveredAt']);
+        $smsWrapper->setMessageId($data['messageId'] ?? '');
+        $smsWrapper->setId($data['externalId'] ?? '');
+        $smsWrapper->setSender($data['aNumber'] ?? '');
+        $smsWrapper->setTextId($data['textId'] ?? '');
+        $smsWrapper->setReceiver($data['bNumber'] ?? '');
+        $smsWrapper->setText($data['text'] ?? '');
+        $smsWrapper->setPriority($data['priority'] ?? '');
+        $smsWrapper->setSendAt($data['sendAt'] ?? '');
+        $smsWrapper->setStatus($data['status'] ?? '');
+        $smsWrapper->setDeliveredAt( $data['deliveredAt'] ?? '');
         return $smsWrapper;
     }
 }
