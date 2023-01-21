@@ -12,7 +12,7 @@ class LoginTest extends TestCase
         $connection = new \JiriSmach\FaynSmsApi\Connection('username', 'password');
 
         $smsWrapper = new \JiriSmach\FaynSmsApi\Wrappers\SmsWrapper();
-        $smsWrapper->setReciever('+420777777777');
+        $smsWrapper->setReceiver('+420777777777');
         $smsWrapper->setText('Test text');
 
         $sms = new \JiriSmach\FaynSmsApi\Sms($connection);

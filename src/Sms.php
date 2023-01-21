@@ -4,6 +4,7 @@ namespace JiriSmach\FaynSmsApi;
 
 use DateTimeInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Utils;
 use JiriSmach\FaynSmsApi\Request\SmsGetListRequest;
 use JiriSmach\FaynSmsApi\Request\SmsGetRequest;
 use JiriSmach\FaynSmsApi\Request\SmsSendRequest;
@@ -41,8 +42,8 @@ class Sms
     {
         $smsRequest = new SmsGetRequest($messageId, $externalId);
         $response = $this->connection->getRequest($smsRequest);
-
-        return $this->createSmsFromResponse($response);
+        $responseArray = Utils::jsonDecode($response->getBody()?->getContents() ?: '', true);
+        return $this->createSmsFromResponse($responseArray);
     }
 
     /**
@@ -56,8 +57,9 @@ class Sms
     {
         $smsRequest = new SmsGetListRequest($from, $to);
         $response = $this->connection->getRequest($smsRequest);
+        $responseArray = Utils::jsonDecode($response->getBody()?->getContents() ?: '', true);
         $return = [];
-        foreach (($response['messages'] ?? []) as $message) {
+        foreach (($responseArray['messages'] ?? []) as $message) {
             $return[] = $this->createSmsFromResponse($message);
         }
         return $return;
@@ -70,17 +72,16 @@ class Sms
     private function createSmsFromResponse(array $data): SmsInterface
     {
         $smsWrapper = new SmsWrapper();
-        $smsWrapper->setMessageId("000275ca");
-        $smsWrapper->setId("123e4567-e89b-12d3-a456-426614174000");
+        $smsWrapper->setMessageId($data['messageId']);
+        $smsWrapper->setId($data['externalId']);
         $smsWrapper->setSender($data['aNumber']);
-        $smsWrapper->setTextId("alphanum");
-        $smsWrapper->setReciever("00420777444555");
-        //$smsWrapper->setMessageType("SMS");
-        $smsWrapper->setText("string");
-        $smsWrapper->setPriority(true);
-        $smsWrapper->setSendAt("string");
-        $smsWrapper->setStatus("entered");
-        $smsWrapper->setDeliveredAt("string");
+        $smsWrapper->setTextId($data['textId']);
+        $smsWrapper->setReceiver($data['bNumber']);
+        $smsWrapper->setText($data['text']);
+        $smsWrapper->setPriority($data['priority']);
+        $smsWrapper->setSendAt($data['sendAt']);
+        $smsWrapper->setStatus($data['status']);
+        $smsWrapper->setDeliveredAt( $data['deliveredAt']);
         return $smsWrapper;
     }
 }

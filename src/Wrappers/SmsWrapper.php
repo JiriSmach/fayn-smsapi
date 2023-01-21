@@ -14,11 +14,12 @@ class SmsWrapper implements SmsInterface
     private string $reciever = '';
     private string $text = '';
     private string $sender = '';
-    private string $textId = ''; //": "alphanum",
+    private string $textId = '';
     private bool $priority = false;
-    private string $sendAt = ''; //": "string",
-    private string $status = ''; //": "entered",
-    private string $deliveredAt = ''; //": "string"
+    private string $sendAt = '';
+    private string $status = '';
+    private string $deliveredAt = '';
+    private bool $read = false;
     private Numbers $numberHelper;
 
     public function __construct()
@@ -50,13 +51,13 @@ class SmsWrapper implements SmsInterface
     }
 
     /**
-     * @param string $reciever
+     * @param string $receiver
      * @return $this
      * @throws InvalidArgumentException
      */
-    public function setReciever(string $reciever): self
+    public function setReceiver(string $receiver): self
     {
-        $this->reciever = $this->numberHelper->validatePhoneNumber($reciever, [420]);
+        $this->reciever = $this->numberHelper->validatePhoneNumber($receiver, [420]);
         return $this;
     }
 
@@ -73,7 +74,7 @@ class SmsWrapper implements SmsInterface
     }
 
     /**
-     * @param string $reciever
+     * @param string $sender
      * @return $this
      * @throws InvalidArgumentException
      */
@@ -111,5 +112,66 @@ class SmsWrapper implements SmsInterface
     {
         $this->deliveredAt = $deliveryAt;
         return $this;
+    }
+
+    public function setRead(bool $read): self
+    {
+        $this->read = $read;
+        return $this;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function getReciever(): string
+    {
+        return $this->reciever;
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    public function getMessageId(): string
+    {
+        return $this->messageId;
+    }
+
+    public function getSender(): string
+    {
+        return $this->sender;
+    }
+
+    public function getTextId(): string
+    {
+        return $this->textId;
+    }
+
+    public function getPriority(): bool
+    {
+        return $this->priority;
+    }
+
+    public function getSendAt(): string
+    {
+        return $this->sendAt;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function getDeliveredAt(): string
+    {
+        return $this->deliveredAt;
+    }
+
+    public function getRead(): bool
+    {
+        return $this->read;
     }
 }
