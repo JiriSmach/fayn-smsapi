@@ -2,7 +2,9 @@
 
 namespace JiriSmach\FaynSmsApi;
 
+use DateTimeInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use JiriSmach\FaynSmsApi\Request\ReceivedSmsListRequest;
 use JiriSmach\FaynSmsApi\Request\SmsRequest;
 
 class ReceivedSms
@@ -20,9 +22,27 @@ class ReceivedSms
      * @throws Exceptions\LoginException
      * @throws GuzzleException
      */
-    public function getList()
-    {
-        $this->connection->getRequest();
+    public function getList(
+        ?int $pageSize,
+        ?int $page,
+        ?DateTimeInterface $dateFrom,
+        ?DateTimeInterface $dateTo,
+        ?int $messageId,
+        ?string $id,
+        ?string $source,
+        ?int $cid
+    ) {
+        $receivedSmsRequest = new ReceivedSmsListRequest(
+            $pageSize,
+            $page,
+            $dateFrom,
+            $dateTo,
+            $messageId,
+            $id,
+            $source,
+            $cid
+        );
+        $this->connection->getRequest($receivedSmsRequest);
     }
 
     /**

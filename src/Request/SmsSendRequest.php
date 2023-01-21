@@ -7,19 +7,33 @@ use JiriSmach\FaynSmsApi\SmsInterface;
 
 class SmsSendRequest extends SmsRequest
 {
-    private SmsInterface $sms;
+    private array $sms;
 
-    public function __construct(SmsInterface $sms)
+    /**
+     * @param SmsInterface[] $sms
+     */
+    public function __construct(array $sms)
     {
         $this->sms = $sms;
     }
+
+    /**
+     * @return string
+     */
     public function getMethod(): string
     {
         return parent::getMethod() . '/send';
     }
 
+    /**
+     * @return string
+     */
     public function getBodyJson(): string
     {
-        return Utils::jsonEncode([$this->sms->getData()]);
+        $array = [];
+        foreach ($this->sms as $sms) {
+            $array[] = $sms->getData();
+        }
+        return Utils::jsonEncode($array);
     }
 }

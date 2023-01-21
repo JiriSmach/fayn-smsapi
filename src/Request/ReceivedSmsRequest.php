@@ -2,10 +2,9 @@
 
 namespace JiriSmach\FaynSmsApi\Request;
 
-use GuzzleHttp\Utils;
 use JiriSmach\FaynSmsApi\RequestInterface;
 
-abstract class SmsRequest implements RequestInterface
+abstract class ReceivedSmsRequest implements RequestInterface
 {
     abstract public function getBodyJson(): string;
 
@@ -16,6 +15,6 @@ abstract class SmsRequest implements RequestInterface
 
     public function getMethod(): string
     {
-        return 'sms/';
+        return 'received-sms/';
     }
 }

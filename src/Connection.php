@@ -32,7 +32,7 @@ class Connection
     /**
      * @return bool
      */
-    public function tryLogin(): bool
+    public function isLogin(): bool
     {
         try {
             $this->checkLogin();
@@ -134,7 +134,6 @@ class Connection
                 $request = $this->createRequest('POST', $loginRequest);
                 $response = $client->send($request);
                 $responseArray = Utils::jsonDecode($response->getBody()->getContents(), true);
-                var_dump($response->getBody());
                 if (isset($responseArray['token'])) {
                     $this->token = $responseArray['token'];
                 } else {

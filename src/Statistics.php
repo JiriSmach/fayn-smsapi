@@ -5,6 +5,7 @@ namespace JiriSmach\FaynSmsApi;
 use DateTimeInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use JiriSmach\FaynSmsApi\Request\StatisticsRequest;
+use JiriSmach\FaynSmsApi\Wrappers\StatisticsDataWrapper;
 
 class Statistics
 {
@@ -20,11 +21,11 @@ class Statistics
      * @param DateTimeInterface|null $from
      * @param DateTimeInterface|null $to
      * @param int|null $userId
-     * @return StatisticsData
+     * @return StatisticsDataWrapper
      * @throws Exceptions\LoginException
      * @throws GuzzleException
      */
-    public function getStatistics(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?int $userId = null): StatisticsData
+    public function getStatistics(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?int $userId = null): StatisticsDataWrapper
     {
         $statisticsRequest = new StatisticsRequest($userId);
         if ($from) {
@@ -36,6 +37,6 @@ class Statistics
 
         $this->connection->getRequest($statisticsRequest);
         // todo: dostat z odpovedi data a vytvorit tridu
-        return new StatisticsData();
+        return new StatisticsDataWrapper();
     }
 }

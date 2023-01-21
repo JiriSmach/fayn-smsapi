@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use JiriSmach\FaynSmsApi\Request\SmsGetListRequest;
 use JiriSmach\FaynSmsApi\Request\SmsGetRequest;
 use JiriSmach\FaynSmsApi\Request\SmsSendRequest;
+use JiriSmach\FaynSmsApi\Wrappers\SmsWrapper;
 
 class Sms
 {
@@ -19,11 +20,11 @@ class Sms
     }
 
     /**
-     * @param SmsInterface $smsInterface
+     * @param SmsInterface[] $smsInterface
      * @throws Exceptions\LoginException
      * @throws GuzzleException
      */
-    public function sendSms(SmsInterface $smsInterface): void
+    public function sendSms(array $smsInterface): void
     {
         $smsRequest = new SmsSendRequest($smsInterface);
         $this->connection->postRequest($smsRequest);
@@ -73,7 +74,7 @@ class Sms
         $smsWrapper->setId("123e4567-e89b-12d3-a456-426614174000");
         $smsWrapper->setSender($data['aNumber']);
         $smsWrapper->setTextId("alphanum");
-        $smsWrapper->setNumber("00420777444555");
+        $smsWrapper->setReciever("00420777444555");
         //$smsWrapper->setMessageType("SMS");
         $smsWrapper->setText("string");
         $smsWrapper->setPriority(true);

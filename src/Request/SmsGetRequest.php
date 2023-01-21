@@ -15,9 +15,9 @@ class SmsGetRequest extends SmsRequest
     public function getMethod(): string
     {
         if ($this->messageId) {
-            return parent::getMethod() . '/' . $this->messageId;
+            return parent::getMethod() . $this->messageId;
         } elseif ($this->externalId) {
-            return parent::getMethod() . '/by-external-id/' . $this->externalId;
+            return parent::getMethod() . 'by-external-id/' . $this->externalId;
         }
         throw new \Exception('Need some ID');
     }

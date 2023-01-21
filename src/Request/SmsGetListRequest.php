@@ -9,7 +9,7 @@ class SmsGetListRequest extends SmsRequest
     private ?DateTimeInterface $datetimeTo;
     private ?DateTimeInterface $datetimeFrom;
 
-    public function __construct(?DateTimeInterface $datetimeTo = null, ?DateTimeInterface $datetimeTo = null)
+    public function __construct(?DateTimeInterface $datetimeFrom = null, ?DateTimeInterface $datetimeTo = null)
     {
         $this->datetimeFrom = $datetimeFrom;
         $this->datetimeTo = $datetimeTo;
@@ -17,7 +17,7 @@ class SmsGetListRequest extends SmsRequest
 
     public function getMethod(): string
     {
-        return parent::getMethod() . '/list';
+        return parent::getMethod() . 'list';
     }
 
     /**
