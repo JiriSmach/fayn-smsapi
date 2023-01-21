@@ -11,6 +11,7 @@ use GuzzleHttp\Utils;
 use JiriSmach\FaynSmsApi\Exceptions\LoginException;
 use JiriSmach\FaynSmsApi\Request\LoginRequest;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 class Connection
 {
@@ -107,10 +108,7 @@ class Connection
 
     /**
      * @return void
-     * @throws ClientException
-     * @throws ServerException
      * @throws LoginException
-     * @throws GuzzleException
      */
     private function checkLogin(): void
     {
@@ -120,8 +118,8 @@ class Connection
             $loginRequest = new LoginRequest($this->username, $this->password);
             $request = $this->createRequest('POST', $loginRequest);
 
-            $response = $client->send($request);
-            if ($response->getStatusCode() === 200) {
+            try {
+                $response = $client->send($request);
                 $responseArray = Utils::jsonDecode($response->getBody()->getContents(), true);
                 if (isset($responseArray['token'])) {
                     $this->token = $responseArray['token'];
@@ -129,12 +127,8 @@ class Connection
                     $message = 'Token error';
                     throw new LoginException($message);
                 }
-            } else {
-                $message = 'Login error';
-                if (isset($responseArray['message'])) {
-                    $message .= ': ' . $responseArray['message'];
-                }
-                throw new LoginException($message, $response->getStatusCode());
+            } catch (Throwable $e) {
+                throw new LoginException('Login error: ' . $e->getMessage(), $e->getCode(), $e);
             }
         }
     }

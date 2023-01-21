@@ -4,6 +4,7 @@ namespace JiriSmach\FaynSmsApi;
 
 use DateTimeInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use JiriSmach\FaynSmsApi\Request\SmsGetListRequest;
 use JiriSmach\FaynSmsApi\Request\SmsGetRequest;
 use JiriSmach\FaynSmsApi\Request\SmsSendRequest;
 
@@ -19,7 +20,6 @@ class Sms
 
     /**
      * @param SmsInterface $smsInterface
-     * @return 
      * @throws Exceptions\LoginException
      * @throws GuzzleException
      */
@@ -32,29 +32,54 @@ class Sms
     /**
      * @param null|string $messageId
      * @param null|string $externalId
+     * @return null|SmsInterface
      * @throws Exceptions\LoginException
      * @throws GuzzleException
      */
-    public function getSms(?string $messageId = null, ?string $externalId = null): SmsData
+    public function getSms(?string $messageId = null, ?string $externalId = null): ?SmsInterface
     {
         $smsRequest = new SmsGetRequest($messageId, $externalId);
-        $this->connection->getRequest($smsRequest);
+        $response = $this->connection->getRequest($smsRequest);
 
-        $smsData = new SmsData();
-        return $smsData;
+        return $this->createSmsFromResponse($response);
     }
 
     /**
      * @param DateTimeInterface|null $from
      * @param DateTimeInterface|null $to
-     * @return SmsData[]
+     * @return SmsInterface[]
      * @throws Exceptions\LoginException
      * @throws GuzzleException
      */
     public function getSmsList(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
         $smsRequest = new SmsGetListRequest($from, $to);
-        $this->connection->getRequest($smsRequest);
-        return [];
+        $response = $this->connection->getRequest($smsRequest);
+        $return = [];
+        foreach (($response['messages'] ?? []) as $message) {
+            $return[] = $this->createSmsFromResponse($message);
+        }
+        return $return;
+    }
+
+    /**
+     * @param array $data
+     * @return SmsInterface
+     */
+    private function createSmsFromResponse(array $data): SmsInterface
+    {
+        $smsWrapper = new SmsWrapper();
+        $smsWrapper->setMessageId("000275ca");
+        $smsWrapper->setId("123e4567-e89b-12d3-a456-426614174000");
+        $smsWrapper->setSender($data['aNumber']);
+        $smsWrapper->setTextId("alphanum");
+        $smsWrapper->setNumber("00420777444555");
+        //$smsWrapper->setMessageType("SMS");
+        $smsWrapper->setText("string");
+        $smsWrapper->setPriority(true);
+        $smsWrapper->setSendAt("string");
+        $smsWrapper->setStatus("entered");
+        $smsWrapper->setDeliveredAt("string");
+        return $smsWrapper;
     }
 }
