@@ -5,6 +5,7 @@ namespace JiriSmach\FaynSmsApi;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Utils;
@@ -26,6 +27,19 @@ class Connection
     ) {
         $this->username = $username;
         $this->password = $password;
+    }
+
+    /**
+     * @return bool
+     */
+    public function tryLogin(): bool
+    {
+        try {
+            $this->checkLogin();
+        } catch (LoginException) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -113,14 +127,14 @@ class Connection
     private function checkLogin(): void
     {
         if (is_null($this->token)) {
-            $client = new Client();
-
             $loginRequest = new LoginRequest($this->username, $this->password);
-            $request = $this->createRequest('POST', $loginRequest);
 
             try {
+                $client = new Client();
+                $request = $this->createRequest('POST', $loginRequest);
                 $response = $client->send($request);
                 $responseArray = Utils::jsonDecode($response->getBody()->getContents(), true);
+                var_dump($response->getBody());
                 if (isset($responseArray['token'])) {
                     $this->token = $responseArray['token'];
                 } else {
@@ -128,7 +142,16 @@ class Connection
                     throw new LoginException($message);
                 }
             } catch (Throwable $e) {
-                throw new LoginException('Login error: ' . $e->getMessage(), $e->getCode(), $e);
+                if ($e instanceof RequestException) {
+                    $response = $e->getResponse()?->getBody()?->getContents();
+                    $responseArray = Utils::jsonDecode($response ?: '', true);
+                    $message = $responseArray['message'] ?? $e->getResponse()?->getReasonPhrase();
+                    $code = $e->getResponse()?->getStatusCode();
+                } else {
+                    $code = $e->getCode();
+                    $message = $e->getMessage();
+                }
+                throw new LoginException('Login error: ' . $message, $code, $e);
             }
         }
     }

@@ -2,8 +2,8 @@
 
 namespace JiriSmach\FaynSmsApi\Exceptions;
 
-use HttpRequestException;
+use RuntimeException;
 
-class LoginException extends HttpRequestException
+class LoginException extends RuntimeException
 {
 }
