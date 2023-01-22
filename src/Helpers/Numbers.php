@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Helpers;
 
@@ -16,7 +17,7 @@ class Numbers
     {
         $phoneNumber = str_replace([' ', '-', '(', ')'], '', $phoneNumber);
         $phoneNumber = str_replace('+', '00', $phoneNumber);
-        $regex = '(([0]{2}[0-9]{1,4})|())([0-9]{8,15})';
+        $regex = '(0{2}[0-9]{1,4})([0-9]{8,15})';
         $requiredCountryCallingCodes = array_unique(
             array_filter(
                 $requiredCountryCallingCodes,

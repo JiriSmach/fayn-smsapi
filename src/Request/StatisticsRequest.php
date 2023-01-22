@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
 
@@ -19,7 +20,7 @@ class StatisticsRequest implements RequestInterface
         return '';
     }
 
-    public function getMethod(): string
+    public function getPath(): string
     {
         $method = 'statistics';
         if ($this->userId) {
@@ -37,5 +38,10 @@ class StatisticsRequest implements RequestInterface
     {
         $this->urlParams[$key] = $param;
         return $this;
+    }
+
+    public function getMethod(): string
+    {
+        return self::METHOD_GET;
     }
 }

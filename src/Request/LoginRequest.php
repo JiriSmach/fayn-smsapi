@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
 
@@ -32,8 +33,13 @@ class LoginRequest implements RequestInterface
         return [];
     }
 
-    public function getMethod(): string
+    public function getPath(): string
     {
         return 'login';
+    }
+
+    public function getMethod(): string
+    {
+        return self::METHOD_POST;
     }
 }

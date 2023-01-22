@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
 
@@ -24,7 +25,7 @@ class BulkChangeRequest implements RequestInterface
         ]);
     }
 
-    public function getMethod(): string
+    public function getPath(): string
     {
         return 'received-sms/bulk-change';
     }
@@ -32,5 +33,10 @@ class BulkChangeRequest implements RequestInterface
     public function getUrlParams(): array
     {
         return [];
+    }
+
+    public function getMethod(): string
+    {
+        return self::METHOD_POST;
     }
 }

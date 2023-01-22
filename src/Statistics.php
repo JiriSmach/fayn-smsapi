@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi;
 
@@ -19,25 +20,27 @@ class Statistics
         $this->connection = $connection;
     }
 
+
     /**
-     * @param DateTimeInterface|null $from
-     * @param DateTimeInterface|null $to
-     * @param int|null $userId
+     * @param  DateTimeInterface|null $from
+     * @param  DateTimeInterface|null $to
+     * @param  int|null $userId
      * @return StatisticsDataWrapper
      * @throws Exceptions\LoginException
      * @throws GuzzleException
      */
-    public function getStatistics(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?int $userId = null): StatisticsDataWrapper
+    public function getStatistics(?DateTimeInterface $from=null, ?DateTimeInterface $to=null, ?int $userId=null): StatisticsDataWrapper
     {
         $statisticsRequest = new StatisticsRequest($userId);
         if ($from) {
             $statisticsRequest->addUrlParam('creditHistoryFrom', $from->format(DateTimeInterface::ATOM));
         }
+
         if ($to) {
             $statisticsRequest->addUrlParam('creditHistoryTo', $to->format(DateTimeInterface::ATOM));
         }
 
-        $response = $this->connection->getRequest($statisticsRequest);
+        $response = $this->connection->doRequest($statisticsRequest);
         $responseArray = Utils::jsonDecode($response->getBody()?->getContents() ?: '', true);
         $statisticsDataWrapper = new StatisticsDataWrapper();
 

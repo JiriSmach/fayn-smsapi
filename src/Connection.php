@@ -1,12 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Utils;
 use JiriSmach\FaynSmsApi\Exceptions\LoginException;
@@ -28,7 +27,9 @@ class Connection
     ) {
         $this->username = $username;
         $this->password = $password;
-    }
+
+    }//end __construct()
+
 
     /**
      * @return bool
@@ -43,78 +44,38 @@ class Connection
         return true;
     }
 
-    /**
-     * @param RequestInterface $requestInterface
-     * @return ResponseInterface
-     * @throws GuzzleException
-     * @throws ClientException
-     * @throws ServerException
-     * @throws LoginException
-     */
-    public function getRequest(RequestInterface $requestInterface): ResponseInterface
-    {
-        $this->checkLogin();
-        $client = new Client();
-        $request = $this->createRequest('GET', $requestInterface);
-
-        return $client->send($request);
-    }
 
     /**
      * @param RequestInterface $requestInterface
      * @return ResponseInterface
      * @throws GuzzleException
-     * @throws ClientException
-     * @throws ServerException
-     * @throws LoginException
      */
-    public function postRequest(RequestInterface $requestInterface): ResponseInterface
+    public function doRequest(RequestInterface $requestInterface): ResponseInterface
     {
         $this->checkLogin();
         $client = new Client();
-        $request = $this->createRequest('POST', $requestInterface);
-
+        $request = $this->getRequest($requestInterface);
         return $client->send($request);
     }
 
     /**
-     * @param RequestInterface $requestInterface
-     * @return ResponseInterface
-     * @throws GuzzleException
-     * @throws ClientException
-     * @throws ServerException
-     * @throws LoginException
-     */
-    public function patchRequest(RequestInterface $requestInterface): ResponseInterface
-    {
-        $this->checkLogin();
-        $client = new Client();
-        $request = $this->createRequest('PATCH', $requestInterface);
-
-        return $client->send($request);
-    }
-
-    /**
-     * @param string $requestMethod
      * @param RequestInterface $requestInterface
      * @return Request
-     * @throws ClientException
-     * @throws ServerException
-     * @return Request
      */
-    private function createRequest(string $requestMethod, RequestInterface $requestInterface): Request
+    private function getRequest(RequestInterface $requestInterface): Request
     {
         $headers = [
             'Accept' => 'application/json',
             'content-type' => 'application/json'
         ];
+
         if ($this->token) {
             $headers['Authorization'] = 'Bearer ' . $this->token;
         }
         $body = $requestInterface->getBodyJson();
 
         return new Request(
-            $requestMethod,
+            $requestInterface->getMethod(),
             $this->getUrl($requestInterface),
             $headers,
             $body
@@ -132,7 +93,7 @@ class Connection
 
             try {
                 $client = new Client();
-                $request = $this->createRequest('POST', $loginRequest);
+                $request = $this->getRequest($loginRequest);
                 $response = $client->send($request);
                 $responseArray = Utils::jsonDecode($response->getBody()->getContents(), true);
                 if (isset($responseArray['token'])) {
@@ -162,7 +123,7 @@ class Connection
      */
     private function getUrl(RequestInterface $requestInterface): string
     {
-        $url = str_replace('%method%', $requestInterface->getMethod(), self::URL);
+        $url = str_replace('%method%', $requestInterface->getPath(), self::URL);
         $url_parts = parse_url($url);
         $params = $requestInterface->getUrlParams();
         if (isset($url_parts['query'])) {

@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi;
 
@@ -34,8 +35,7 @@ class ReceivedSms
      * @throws GuzzleException
      */
     public function getList(
-        ?int $pageSize,
-        ?int $page,
+        ?int $pageSize, ?int $page,
         ?DateTimeInterface $dateFrom,
         ?DateTimeInterface $dateTo,
         ?int $messageId,
@@ -53,7 +53,7 @@ class ReceivedSms
             $source,
             $cid
         );
-        $response = $this->connection->getRequest($receivedSmsRequest);
+        $response = $this->connection->doRequest($receivedSmsRequest);
         $responseArray = Utils::jsonDecode($response->getBody()?->getContents() ?: '', true);
         $return = [];
         foreach (($responseArray['messages'] ?? []) as $message) {
@@ -61,6 +61,7 @@ class ReceivedSms
         }
         return $return;
     }
+
 
     /**
      * @param string $messageId
@@ -70,22 +71,24 @@ class ReceivedSms
     public function markAsRead(string $messageId): void
     {
         $markAsReadRequest = new MarkAsReadRequest($messageId);
-        $this->connection->patchRequest($markAsReadRequest);
+        $this->connection->doRequest($markAsReadRequest);
     }
 
+
     /**
-     * @param array $messageIds
+     * @param  array $messageIds
      * @throws Exceptions\LoginException
      * @throws GuzzleException
      */
     public function makrsAsRead(array $messageIds): void
     {
         $bulkChangeRequest = new BulkChangeRequest('markAsRead', $messageIds);
-        $this->connection->postRequest($bulkChangeRequest);
+        $this->connection->doRequest($bulkChangeRequest);
     }
 
+
     /**
-     * @param array $data
+     * @param  array $data
      * @return SmsInterface
      */
     private function createSmsFromResponse(array $data): SmsInterface

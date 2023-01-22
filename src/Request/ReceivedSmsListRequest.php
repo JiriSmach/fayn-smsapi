@@ -6,14 +6,14 @@ use DateTimeInterface;
 
 class ReceivedSmsListRequest extends ReceivedSmsRequest
 {
-    private ?int $pageSize = null;
-    private ?int $page = null;
-    private ?DateTimeInterface $datetimeFrom = null;
-    private ?DateTimeInterface $datetimeTo = null;
-    private ?int $messageId = null;
-    private ?string $id = null;
-    private ?string $source = null;
-    private ?int $cid = null;
+    private ?int $pageSize;
+    private ?int $page;
+    private ?DateTimeInterface $datetimeFrom;
+    private ?DateTimeInterface $datetimeTo;
+    private ?int $messageId;
+    private ?string $id;
+    private ?string $source;
+    private ?int $cid;
 
     public function __construct(
         ?int $pageSize,
@@ -40,9 +40,9 @@ class ReceivedSmsListRequest extends ReceivedSmsRequest
         return '';
     }
 
-    public function getMethod(): string
+    public function getPath(): string
     {
-        return parent::getMethod() . 'list';
+        return parent::getPath().'list';
     }
 
     /**
@@ -77,5 +77,10 @@ class ReceivedSmsListRequest extends ReceivedSmsRequest
         }
 
         return $params;
+    }
+
+    public function getMethod(): string
+    {
+        return self::METHOD_GET;
     }
 }

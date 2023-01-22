@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
 
@@ -20,9 +21,9 @@ class SmsSendRequest extends SmsRequest
     /**
      * @return string
      */
-    public function getMethod(): string
+    public function getPath(): string
     {
-        return parent::getMethod() . '/send';
+        return parent::getPath().'/send';
     }
 
     /**
@@ -34,6 +35,12 @@ class SmsSendRequest extends SmsRequest
         foreach ($this->sms as $sms) {
             $array[] = $sms->getData();
         }
+
         return Utils::jsonEncode($array);
+    }
+
+    public function getMethod(): string
+    {
+        return self::METHOD_POST;
     }
 }

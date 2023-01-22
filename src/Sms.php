@@ -1,12 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi;
 
 use DateTimeInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Utils;
+use JiriSmach\FaynSmsApi\Request\SmsGetByExternalIdRequest;
+use JiriSmach\FaynSmsApi\Request\SmsGetByIdRequest;
 use JiriSmach\FaynSmsApi\Request\SmsGetListRequest;
-use JiriSmach\FaynSmsApi\Request\SmsGetRequest;
 use JiriSmach\FaynSmsApi\Request\SmsSendRequest;
 use JiriSmach\FaynSmsApi\Wrappers\SmsWrapper;
 
@@ -28,23 +30,38 @@ class Sms
     public function sendSms(array $smsInterface): void
     {
         $smsRequest = new SmsSendRequest($smsInterface);
-        $this->connection->postRequest($smsRequest);
+        $this->connection->doRequest($smsRequest);
     }
 
     /**
-     * @param null|string $messageId
-     * @param null|string $externalId
+     * @param  string $messageId
      * @return null|SmsInterface
      * @throws Exceptions\LoginException
      * @throws GuzzleException
      */
-    public function getSms(?string $messageId = null, ?string $externalId = null): ?SmsInterface
+    public function getSmsById(string $messageId): ?SmsInterface
     {
-        $smsRequest = new SmsGetRequest($messageId, $externalId);
-        $response = $this->connection->getRequest($smsRequest);
+        $smsRequest = new SmsGetByIdRequest($messageId);
+        $response = $this->connection->doRequest($smsRequest);
         $responseArray = Utils::jsonDecode($response->getBody()?->getContents() ?: '', true);
         return $this->createSmsFromResponse($responseArray);
     }
+
+
+    /**
+     * @param  string $externalId
+     * @return null|SmsInterface
+     * @throws Exceptions\LoginException
+     * @throws GuzzleException
+     */
+    public function getSmsByExternalId(string $externalId): ?SmsInterface
+    {
+        $smsRequest = new SmsGetByExternalIdRequest($externalId);
+        $response = $this->connection->doRequest($smsRequest);
+        $responseArray = Utils::jsonDecode($response->getBody()?->getContents() ?: '', true);
+        return $this->createSmsFromResponse($responseArray);
+    }
+
 
     /**
      * @param DateTimeInterface|null $from
@@ -56,7 +73,7 @@ class Sms
     public function getSmsList(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
         $smsRequest = new SmsGetListRequest($from, $to);
-        $response = $this->connection->getRequest($smsRequest);
+        $response = $this->connection->doRequest($smsRequest);
         $responseArray = Utils::jsonDecode($response->getBody()?->getContents() ?: '', true);
         $return = [];
         foreach (($responseArray['messages'] ?? []) as $message) {
