@@ -13,6 +13,7 @@ use JiriSmach\FaynSmsApi\Exceptions\LoginException;
 use JiriSmach\FaynSmsApi\Request\LoginRequest;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
+use SensitiveParameter;
 
 class Connection
 {
@@ -23,7 +24,7 @@ class Connection
 
     public function __construct(
         string $username,
-        string $password
+        #[SensitiveParameter] string $password
     ) {
         $this->username = $username;
         $this->password = $password;
