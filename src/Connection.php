@@ -88,7 +88,7 @@ class Connection
      */
     private function checkLogin(): void
     {
-        if (is_null($this->token)) {
+        if ($this->token === null) {
             $loginRequest = new LoginRequest($this->username, $this->password);
 
             try {
