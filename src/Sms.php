@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi;
@@ -23,8 +24,8 @@ class Sms
     }
 
     /**
-     * @param SmsInterface[] $smsInterface
-     * @throws Exceptions\LoginException
+     * @param  SmsInterface[] $smsInterface
+     * @throws \JiriSmach\FaynSmsApi\Exceptions\LoginException
      * @throws GuzzleException
      */
     public function sendSms(array $smsInterface): void
@@ -35,8 +36,8 @@ class Sms
 
     /**
      * @param  string $messageId
-     * @return null|SmsInterface
-     * @throws Exceptions\LoginException
+     * @return SmsInterface|null
+     * @throws \JiriSmach\FaynSmsApi\Exceptions\LoginException
      * @throws GuzzleException
      */
     public function getSmsById(string $messageId): ?SmsInterface
@@ -44,14 +45,14 @@ class Sms
         $smsRequest = new SmsGetByIdRequest($messageId);
         $response = $this->connection->doRequest($smsRequest);
         $responseArray = Utils::jsonDecode($response->getBody()?->getContents() ?: '', true);
+
         return $this->createSmsFromResponse($responseArray);
     }
 
-
     /**
      * @param  string $externalId
-     * @return null|SmsInterface
-     * @throws Exceptions\LoginException
+     * @return SmsInterface|null
+     * @throws \JiriSmach\FaynSmsApi\Exceptions\LoginException
      * @throws GuzzleException
      */
     public function getSmsByExternalId(string $externalId): ?SmsInterface
@@ -59,15 +60,15 @@ class Sms
         $smsRequest = new SmsGetByExternalIdRequest($externalId);
         $response = $this->connection->doRequest($smsRequest);
         $responseArray = Utils::jsonDecode($response->getBody()?->getContents() ?: '', true);
+
         return $this->createSmsFromResponse($responseArray);
     }
 
-
     /**
-     * @param DateTimeInterface|null $from
-     * @param DateTimeInterface|null $to
+     * @param  DateTimeInterface|null $from
+     * @param  DateTimeInterface|null $to
      * @return SmsInterface[]
-     * @throws Exceptions\LoginException
+     * @throws \JiriSmach\FaynSmsApi\Exceptions\LoginException
      * @throws GuzzleException
      */
     public function getSmsList(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
@@ -79,11 +80,12 @@ class Sms
         foreach (($responseArray['messages'] ?? []) as $message) {
             $return[] = $this->createSmsFromResponse($message);
         }
+
         return $return;
     }
 
     /**
-     * @param array $data
+     * @param  array<string, mixed> $data
      * @return SmsInterface
      */
     private function createSmsFromResponse(array $data): SmsInterface
@@ -98,7 +100,8 @@ class Sms
         $smsWrapper->setPriority($data['priority'] ?? '');
         $smsWrapper->setSendAt($data['sendAt'] ?? '');
         $smsWrapper->setStatus($data['status'] ?? '');
-        $smsWrapper->setDeliveredAt( $data['deliveredAt'] ?? '');
+        $smsWrapper->setDeliveredAt($data['deliveredAt'] ?? '');
+
         return $smsWrapper;
     }
 }

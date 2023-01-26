@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi;
@@ -13,7 +14,6 @@ use JiriSmach\FaynSmsApi\Wrappers\SmsWrapper;
 
 class ReceivedSms
 {
-
     private Connection $connection;
 
     public function __construct(
@@ -23,19 +23,20 @@ class ReceivedSms
     }
 
     /**
-     * @param int|null $pageSize
-     * @param int|null $page
-     * @param DateTimeInterface|null $dateFrom
-     * @param DateTimeInterface|null $dateTo
-     * @param int|null $messageId
-     * @param string|null $id
-     * @param string|null $source
-     * @param int|null $cid
+     * @param  int|null               $pageSize
+     * @param  int|null               $page
+     * @param  DateTimeInterface|null $dateFrom
+     * @param  DateTimeInterface|null $dateTo
+     * @param  int|null               $messageId
+     * @param  string|null            $id
+     * @param  string|null            $source
+     * @param  int|null               $cid
      * @return SmsWrapper[]
      * @throws GuzzleException
      */
     public function getList(
-        ?int $pageSize, ?int $page,
+        ?int $pageSize,
+        ?int $page,
         ?DateTimeInterface $dateFrom,
         ?DateTimeInterface $dateTo,
         ?int $messageId,
@@ -51,7 +52,7 @@ class ReceivedSms
             $messageId,
             $id,
             $source,
-            $cid
+            $cid,
         );
         $response = $this->connection->doRequest($receivedSmsRequest);
         $responseArray = Utils::jsonDecode($response->getBody()?->getContents() ?: '', true);
@@ -59,13 +60,13 @@ class ReceivedSms
         foreach (($responseArray['messages'] ?? []) as $message) {
             $return[] = $this->createSmsFromResponse($message);
         }
+
         return $return;
     }
 
-
     /**
-     * @param string $messageId
-     * @throws Exceptions\LoginException
+     * @param  string $messageId
+     * @throws \JiriSmach\FaynSmsApi\Exceptions\LoginException
      * @throws GuzzleException
      */
     public function markAsRead(string $messageId): void
@@ -74,10 +75,9 @@ class ReceivedSms
         $this->connection->doRequest($markAsReadRequest);
     }
 
-
     /**
-     * @param  array $messageIds
-     * @throws Exceptions\LoginException
+     * @param  string[] $messageIds
+     * @throws \JiriSmach\FaynSmsApi\Exceptions\LoginException
      * @throws GuzzleException
      */
     public function makrsAsRead(array $messageIds): void
@@ -86,9 +86,8 @@ class ReceivedSms
         $this->connection->doRequest($bulkChangeRequest);
     }
 
-
     /**
-     * @param  array $data
+     * @param  array<string, mixed> $data
      * @return SmsInterface
      */
     private function createSmsFromResponse(array $data): SmsInterface
@@ -101,6 +100,7 @@ class ReceivedSms
         $smsWrapper->setText($data['text'] ?? '');
         $smsWrapper->setReceivedAt($data['receivedAt'] ?? '');
         $smsWrapper->setRead($data['read'] ?? '');
+
         return $smsWrapper;
     }
 }

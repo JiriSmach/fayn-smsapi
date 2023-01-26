@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Wrappers;
@@ -6,7 +7,6 @@ namespace JiriSmach\FaynSmsApi\Wrappers;
 use InvalidArgumentException;
 use JiriSmach\FaynSmsApi\Helpers\Numbers;
 use JiriSmach\FaynSmsApi\SmsInterface;
-use LengthException;
 
 class SmsWrapper implements SmsInterface
 {
@@ -29,6 +29,9 @@ class SmsWrapper implements SmsInterface
         $this->numberHelper = new Numbers();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getData(): array
     {
         return [
@@ -46,85 +49,97 @@ class SmsWrapper implements SmsInterface
     public function setId(string $id): self
     {
         if (mb_strlen($id) > 36) {
-            throw new LengthException('Maximum is 36 chars.');
+            throw new \LengthException('Maximum is 36 chars.');
         }
         $this->id = $id;
+
         return $this;
     }
 
     /**
-     * @param string $receiver
+     * @param  string $receiver
      * @return $this
      * @throws InvalidArgumentException
      */
     public function setReceiver(string $receiver): self
     {
         $this->reciever = $this->numberHelper->validatePhoneNumber($receiver, [420]);
+
         return $this;
     }
 
     public function setText(string $text): self
     {
         $this->text = $text;
+
         return $this;
     }
 
     public function setMessageId(string $messageId): self
     {
         $this->messageId = $messageId;
+
         return $this;
     }
 
     /**
-     * @param string $sender
+     * @param  string $sender
      * @return $this
      * @throws InvalidArgumentException
      */
     public function setSender(string $sender): self
     {
         $this->sender = $this->numberHelper->validatePhoneNumber($sender, [420]);
+
         return $this;
     }
 
     public function setTextId(string $textId): self
     {
         $this->textId = $textId;
+
         return $this;
     }
 
     public function setPriority(bool $priority): self
     {
         $this->priority = $priority;
+
         return $this;
     }
 
     public function setSendAt(string $sendAt): self
     {
         $this->sendAt = $sendAt;
+
         return $this;
     }
 
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 
     public function setDeliveredAt(string $deliveryAt): self
     {
         $this->deliveredAt = $deliveryAt;
+
         return $this;
     }
 
     public function setReceivedAt(string $receivedAt): self
     {
         $this->receivedAt = $receivedAt;
+
         return $this;
     }
 
     public function setRead(bool $read): self
     {
         $this->read = $read;
+
         return $this;
     }
 
