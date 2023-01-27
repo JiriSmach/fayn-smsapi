@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
@@ -9,8 +10,14 @@ use JiriSmach\FaynSmsApi\RequestInterface;
 class BulkChangeRequest implements RequestInterface
 {
     private string $action;
+
+    /** @var array<string, string> */
     private array $messageIds;
 
+    /**
+     * @param string                $action
+     * @param array<string, string> $messageIds
+     */
     public function __construct(string $action, array $messageIds)
     {
         $this->action = $action;
@@ -21,7 +28,7 @@ class BulkChangeRequest implements RequestInterface
     {
         return Utils::jsonEncode([
             'messageIds' => $this->messageIds,
-            'action' => $this->action
+            'action' => $this->action,
         ]);
     }
 
@@ -30,6 +37,9 @@ class BulkChangeRequest implements RequestInterface
         return 'received-sms/bulk-change';
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getUrlParams(): array
     {
         return [];

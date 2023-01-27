@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
@@ -8,6 +9,7 @@ use JiriSmach\FaynSmsApi\SmsInterface;
 
 class SmsSendRequest extends SmsRequest
 {
+    /** @var SmsInterface[] */
     private array $sms;
 
     /**
@@ -23,7 +25,7 @@ class SmsSendRequest extends SmsRequest
      */
     public function getPath(): string
     {
-        return parent::getPath().'/send';
+        return parent::getPath() . '/send';
     }
 
     /**

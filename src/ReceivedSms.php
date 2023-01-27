@@ -17,7 +17,7 @@ class ReceivedSms
     private Connection $connection;
 
     public function __construct(
-        Connection $connection
+        Connection $connection,
     ) {
         $this->connection = $connection;
     }
@@ -42,7 +42,7 @@ class ReceivedSms
         ?int $messageId,
         ?string $id,
         ?string $source,
-        ?int $cid
+        ?int $cid,
     ): array {
         $receivedSmsRequest = new ReceivedSmsListRequest(
             $pageSize,

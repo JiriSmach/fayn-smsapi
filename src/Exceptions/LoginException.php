@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JiriSmach\FaynSmsApi\Exceptions;
 
-use RuntimeException;
-
-class LoginException extends RuntimeException
+class LoginException extends \RuntimeException
 {
 }

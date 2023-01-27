@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JiriSmach\FaynSmsApi\Request;
 
 use DateTimeInterface;
@@ -23,7 +25,7 @@ class ReceivedSmsListRequest extends ReceivedSmsRequest
         ?int $messageId,
         ?string $id,
         ?string $source,
-        ?int $cid
+        ?int $cid,
     ) {
         $this->pageSize = $pageSize;
         $this->page = $page;
@@ -42,11 +44,11 @@ class ReceivedSmsListRequest extends ReceivedSmsRequest
 
     public function getPath(): string
     {
-        return parent::getPath().'list';
+        return parent::getPath() . 'list';
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getUrlParams(): array
     {

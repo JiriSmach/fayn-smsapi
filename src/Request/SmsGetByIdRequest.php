@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
@@ -14,11 +15,11 @@ class SmsGetByIdRequest extends SmsRequest
 
     public function getPath(): string
     {
-        return parent::getPath().$this->messageId;
+        return parent::getPath() . $this->messageId;
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getUrlParams(): array
     {

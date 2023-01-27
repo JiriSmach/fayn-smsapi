@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
@@ -10,19 +11,21 @@ class SmsGetListRequest extends SmsRequest
     private ?DateTimeInterface $datetimeTo;
     private ?DateTimeInterface $datetimeFrom;
 
-    public function __construct(?DateTimeInterface $datetimeFrom=null, ?DateTimeInterface $datetimeTo=null)
-    {
+    public function __construct(
+        ?DateTimeInterface $datetimeFrom = null,
+        ?DateTimeInterface $datetimeTo = null,
+    ) {
         $this->datetimeFrom = $datetimeFrom;
         $this->datetimeTo = $datetimeTo;
     }
 
     public function getPath(): string
     {
-        return parent::getPath().'list';
+        return parent::getPath() . 'list';
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getUrlParams(): array
     {

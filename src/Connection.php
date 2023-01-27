@@ -1,17 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Utils;
-use JiriSmach\FaynSmsApi\Exceptions\LoginException;
 use JiriSmach\FaynSmsApi\Request\LoginRequest;
 use Psr\Http\Message\ResponseInterface;
-use Throwable;
 use SensitiveParameter;
 
 class Connection
@@ -23,13 +21,11 @@ class Connection
 
     public function __construct(
         string $username,
-        #[SensitiveParameter] string $password
+        #[SensitiveParameter] string $password,
     ) {
         $this->username = $username;
         $this->password = $password;
-
-    }//end __construct()
-
+    }
 
     /**
      * @return bool
@@ -38,15 +34,15 @@ class Connection
     {
         try {
             $this->checkLogin();
-        } catch (LoginException) {
+        } catch (\JiriSmach\FaynSmsApi\Exceptions\LoginException) {
             return false;
         }
+
         return true;
     }
 
-
     /**
-     * @param RequestInterface $requestInterface
+     * @param  RequestInterface $requestInterface
      * @return ResponseInterface
      * @throws GuzzleException
      */
@@ -55,18 +51,19 @@ class Connection
         $this->checkLogin();
         $client = new Client();
         $request = $this->getRequest($requestInterface);
+
         return $client->send($request);
     }
 
     /**
-     * @param RequestInterface $requestInterface
+     * @param  RequestInterface $requestInterface
      * @return Request
      */
     private function getRequest(RequestInterface $requestInterface): Request
     {
         $headers = [
             'Accept' => 'application/json',
-            'content-type' => 'application/json'
+            'content-type' => 'application/json',
         ];
 
         if ($this->token) {
@@ -78,13 +75,13 @@ class Connection
             $requestInterface->getMethod(),
             $this->getUrl($requestInterface),
             $headers,
-            $body
+            $body,
         );
     }
 
     /**
      * @return void
-     * @throws LoginException
+     * @throws \JiriSmach\FaynSmsApi\Exceptions\LoginException
      */
     private function checkLogin(): void
     {
@@ -100,10 +97,11 @@ class Connection
                     $this->token = $responseArray['token'];
                 } else {
                     $message = 'Token error';
-                    throw new LoginException($message);
+
+                    throw new \JiriSmach\FaynSmsApi\Exceptions\LoginException($message);
                 }
-            } catch (Throwable $e) {
-                if ($e instanceof RequestException) {
+            } catch (\Throwable $e) {
+                if ($e instanceof \GuzzleHttp\Exception\RequestException) {
                     $response = $e->getResponse()?->getBody()?->getContents();
                     $responseArray = Utils::jsonDecode($response ?: '', true);
                     $message = $responseArray['message'] ?? $e->getResponse()?->getReasonPhrase();
@@ -112,13 +110,14 @@ class Connection
                     $code = $e->getCode();
                     $message = $e->getMessage();
                 }
-                throw new LoginException('Login error: ' . $message, $code, $e);
+
+                throw new \JiriSmach\FaynSmsApi\Exceptions\LoginException('Login error: ' . $message, $code, $e);
             }
         }
     }
 
     /**
-     * @param RequestInterface $requestInterface
+     * @param  RequestInterface $requestInterface
      * @return string
      */
     private function getUrl(RequestInterface $requestInterface): string

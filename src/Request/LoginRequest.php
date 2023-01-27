@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
@@ -24,10 +25,13 @@ class LoginRequest implements RequestInterface
     {
         return Utils::jsonEncode([
             'username' => $this->username,
-            'password' => $this->password
+            'password' => $this->password,
         ]);
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getUrlParams(): array
     {
         return [];

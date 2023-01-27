@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
@@ -10,6 +11,10 @@ abstract class SmsRequest implements RequestInterface
     abstract public function getBodyJson(): string;
 
     abstract public function getMethod(): string;
+
+    /**
+     * @return array<string, string>
+     */
     public function getUrlParams(): array
     {
         return [];

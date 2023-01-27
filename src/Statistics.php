@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi;
@@ -15,22 +16,24 @@ class Statistics
     private Connection $connection;
 
     public function __construct(
-        Connection $connection
+        Connection $connection,
     ) {
         $this->connection = $connection;
     }
 
-
     /**
      * @param  DateTimeInterface|null $from
      * @param  DateTimeInterface|null $to
-     * @param  int|null $userId
+     * @param  int|null               $userId
      * @return StatisticsDataWrapper
-     * @throws Exceptions\LoginException
+     * @throws \JiriSmach\FaynSmsApi\Exceptions\LoginException
      * @throws GuzzleException
      */
-    public function getStatistics(?DateTimeInterface $from=null, ?DateTimeInterface $to=null, ?int $userId=null): StatisticsDataWrapper
-    {
+    public function getStatistics(
+        ?DateTimeInterface $from = null,
+        ?DateTimeInterface $to = null,
+        ?int $userId = null,
+    ): StatisticsDataWrapper {
         $statisticsRequest = new StatisticsRequest($userId);
         if ($from) {
             $statisticsRequest->addUrlParam('creditHistoryFrom', $from->format(DateTimeInterface::ATOM));
@@ -48,21 +51,29 @@ class Statistics
         foreach (($responseArray['creditHistory'] ?? []) as $creditHistory) {
             $statisticsDataWrapper->addCreditHistory(new CreditHistoryWrapper(
                 $creditHistory['date'] ?? '',
-                $creditHistory['value'] ?? 0
+                $creditHistory['value'] ?? 0,
             ));
         }
 
         $statisticsDataWrapper->setAvrgMonthSent($responseArray['smsStaticstics']['avrgMonthSent'] ?? '');
         $statisticsDataWrapper->setAvrgMonthReceived($responseArray['smsStaticstics']['avrgMonthReceived'] ?? '');
-        $statisticsDataWrapper->setLastMonthSentMessages($responseArray['smsStaticstics']['lastMonthSentMessages'] ?? '');
-        $statisticsDataWrapper->setLastMonthDeliveredMessages($responseArray['smsStaticstics']['lastMonthDeliveredMessages'] ?? '');
+        $statisticsDataWrapper->setLastMonthSentMessages(
+            $responseArray['smsStaticstics']['lastMonthSentMessages'] ?? '',
+        );
+        $statisticsDataWrapper->setLastMonthDeliveredMessages(
+            $responseArray['smsStaticstics']['lastMonthDeliveredMessages'] ?? '',
+        );
         $statisticsDataWrapper->setUndeliveredMessages($responseArray['smsStaticstics']['undeliveredMessages'] ?? '');
         $statisticsDataWrapper->setDeliveredMessages($responseArray['smsStaticstics']['deliveredMessages'] ?? '');
         $statisticsDataWrapper->setReceivedMessages($responseArray['smsStaticstics']['receivedMessages'] ?? '');
         $statisticsDataWrapper->setUnknownStateMessages($responseArray['smsStaticstics']['unknownStateMessages'] ?? '');
         $statisticsDataWrapper->setInQueueMessages($responseArray['smsStaticstics']['inQueueMessages'] ?? '');
-        $statisticsDataWrapper->setLastMonthSentSmsCount($responseArray['smsStaticstics']['lastMonthSentSmsCount'] ?? '');
-        $statisticsDataWrapper->setLastMonthDeliveredSmsCount($responseArray['smsStaticstics']['lastMonthDeliveredSmsCount'] ?? '');
+        $statisticsDataWrapper->setLastMonthSentSmsCount(
+            $responseArray['smsStaticstics']['lastMonthSentSmsCount'] ?? '',
+        );
+        $statisticsDataWrapper->setLastMonthDeliveredSmsCount(
+            $responseArray['smsStaticstics']['lastMonthDeliveredSmsCount'] ?? '',
+        );
         $statisticsDataWrapper->setUndeliveredSmsCount($responseArray['smsStaticstics']['undeliveredSmsCount'] ?? '');
         $statisticsDataWrapper->setDeliveredSmsCount($responseArray['smsStaticstics']['deliveredSmsCount'] ?? '');
         $statisticsDataWrapper->setInQueueSmsCount($responseArray['smsStaticstics']['inQueueSmsCount'] ?? '');

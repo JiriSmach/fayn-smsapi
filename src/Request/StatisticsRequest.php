@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Request;
@@ -7,6 +8,7 @@ use JiriSmach\FaynSmsApi\RequestInterface;
 
 class StatisticsRequest implements RequestInterface
 {
+    /** @var array<string, string> */
     private array $urlParams = [];
     private ?int $userId;
 
@@ -26,9 +28,13 @@ class StatisticsRequest implements RequestInterface
         if ($this->userId) {
             $method .= '/' . $this->userId;
         }
+
         return $method;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getUrlParams(): array
     {
         return $this->urlParams;
@@ -37,6 +43,7 @@ class StatisticsRequest implements RequestInterface
     public function addUrlParam(string $key, string $param): self
     {
         $this->urlParams[$key] = $param;
+
         return $this;
     }
 

@@ -18,7 +18,7 @@ class Sms
     private Connection $connection;
 
     public function __construct(
-        Connection $connection
+        Connection $connection,
     ) {
         $this->connection = $connection;
     }
@@ -44,7 +44,10 @@ class Sms
     {
         $smsRequest = new SmsGetByIdRequest($messageId);
         $response = $this->connection->doRequest($smsRequest);
-        $responseArray = Utils::jsonDecode($response->getBody()?->getContents() ?: '', true);
+        $responseArray = Utils::jsonDecode(
+            $response->getBody()?->getContents() ?: '',
+            true,
+        );
 
         return $this->createSmsFromResponse($responseArray);
     }

@@ -1,14 +1,19 @@
 <?php
+
 declare(strict_types=1);
+
 namespace JiriSmach\FaynSmsApi\Request;
+
 use JiriSmach\FaynSmsApi\RequestInterface;
 
 class MarkAsReadRequest implements RequestInterface
 {
-
+    /** @var string<string, string> */
     private string $messageId;
 
-
+    /**
+     * @param string<string, string> $messageId
+     */
     public function __construct(string $messageId)
     {
         $this->messageId = $messageId;
@@ -21,9 +26,12 @@ class MarkAsReadRequest implements RequestInterface
 
     public function getPath(): string
     {
-        return 'received-sms/'. $this->messageId . '/markAsRead';
+        return 'received-sms/' . $this->messageId . '/markAsRead';
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getUrlParams(): array
     {
         return [];
