@@ -24,4 +24,12 @@ abstract class ReceivedSmsRequest implements RequestInterface
     {
         return 'received-sms/';
     }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function getData(): array
+    {
+        return [];
+    }
 }

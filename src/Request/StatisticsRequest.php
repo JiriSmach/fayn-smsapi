@@ -51,4 +51,12 @@ class StatisticsRequest implements RequestInterface
     {
         return self::METHOD_GET;
     }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function getData(): array
+    {
+        return [];
+    }
 }

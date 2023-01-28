@@ -11,10 +11,8 @@ class SmsGetListRequest extends SmsRequest
     private ?DateTimeInterface $datetimeTo;
     private ?DateTimeInterface $datetimeFrom;
 
-    public function __construct(
-        ?DateTimeInterface $datetimeFrom = null,
-        ?DateTimeInterface $datetimeTo = null,
-    ) {
+    public function __construct(?DateTimeInterface $datetimeFrom = null, ?DateTimeInterface $datetimeTo = null)
+    {
         $this->datetimeFrom = $datetimeFrom;
         $this->datetimeTo = $datetimeTo;
     }

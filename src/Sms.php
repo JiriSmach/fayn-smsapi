@@ -17,9 +17,8 @@ class Sms
 {
     private Connection $connection;
 
-    public function __construct(
-        Connection $connection,
-    ) {
+    public function __construct(Connection $connection)
+    {
         $this->connection = $connection;
     }
 
@@ -28,10 +27,20 @@ class Sms
      * @throws \JiriSmach\FaynSmsApi\Exceptions\LoginException
      * @throws GuzzleException
      */
-    public function sendSms(array $smsInterface): void
+    public function sendSms(array $smsInterface): SmsWrapper
     {
         $smsRequest = new SmsSendRequest($smsInterface);
-        $this->connection->doRequest($smsRequest);
+        \var_dump($smsRequest->getBodyJson());
+        $response = $this->connection->doRequest($smsRequest);
+
+        $responseArray = Utils::jsonDecode(
+            $response->getBody()?->getContents() ?: '',
+            true,
+        );
+
+        \var_dump($responseArray);
+
+        return $this->createSmsFromResponse($responseArray);
     }
 
     /**

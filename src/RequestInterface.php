@@ -21,4 +21,9 @@ interface RequestInterface
      * @return array<string, string>
      */
     public function getUrlParams(): array;
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function getData(): array;
 }

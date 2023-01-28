@@ -41,4 +41,12 @@ class MarkAsReadRequest implements RequestInterface
     {
         return self::METHOD_PATCH;
     }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function getData(): array
+    {
+        return [];
+    }
 }

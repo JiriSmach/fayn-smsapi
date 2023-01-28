@@ -16,9 +16,8 @@ class ReceivedSms
 {
     private Connection $connection;
 
-    public function __construct(
-        Connection $connection,
-    ) {
+    public function __construct(Connection $connection)
+    {
         $this->connection = $connection;
     }
 

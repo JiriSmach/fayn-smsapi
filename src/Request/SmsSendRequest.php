@@ -18,6 +18,9 @@ class SmsSendRequest extends SmsRequest
     public function __construct(array $sms)
     {
         $this->sms = $sms;
+        foreach ($this->sms as $sms) {
+            $this->data[$sms->getId()] = $sms;
+        }
     }
 
     /**
@@ -25,7 +28,7 @@ class SmsSendRequest extends SmsRequest
      */
     public function getPath(): string
     {
-        return parent::getPath() . '/send';
+        return parent::getPath() . 'send';
     }
 
     /**

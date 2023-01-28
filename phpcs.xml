@@ -7,9 +7,6 @@
     <arg value="np"/>
 
     <rule ref="./vendor/arxeiss/coding-standards/Rules/phpcs-spaces.xml">
-        <exclude name="Generic.Files.LineLength.MaxExceeded"/>
-        <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions.NonFullyQualified"/>
-        <exclude name="SlevomatCodingStandard.Classes.RequireSingleLineMethodSignatureSniff.RequiredSingleLineSignature"/>
     </rule>
 
     <rule ref="./vendor/arxeiss/coding-standards/Rules/phpcs-strict.xml">

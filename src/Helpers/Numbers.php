@@ -16,26 +16,26 @@ class Numbers
      */
     public function validatePhoneNumber(string $phoneNumber, array $requiredCountryCallingCodes = []): string
     {
-        $phoneNumber = str_replace([' ', '-', '(', ')'], '', $phoneNumber);
-        $phoneNumber = str_replace('+', '00', $phoneNumber);
+        $phoneNumber = \str_replace([' ', '-', '(', ')'], '', $phoneNumber);
+        $phoneNumber = \str_replace('+', '00', $phoneNumber);
         $regex = '(0{2}[0-9]{1,4})([0-9]{8,15})';
-        $requiredCountryCallingCodes = array_unique(
-            array_filter(
+        $requiredCountryCallingCodes = \array_unique(
+            \array_filter(
                 $requiredCountryCallingCodes,
                 static function ($x) {
-                    return is_numeric($x) && strlen((string)$x) <= 4;
+                    return \is_numeric($x) && \strlen((string)$x) <= 4;
                 },
             ),
         );
         if (!empty($requiredCountryCallingCodes)) {
             $calingCodes = [];
             foreach ($requiredCountryCallingCodes as $callingCode) {
-                $len = strlen((string)$callingCode);
+                $len = \strlen((string)$callingCode);
                 $calingCodes[] = '([00' . $callingCode . ']{' . ($len + 2) . '})';
             }
-            $regex = '(' . implode('|', $calingCodes) . ')([0-9]{8,15})';
+            $regex = '(' . \implode('|', $calingCodes) . ')([0-9]{8,15})';
         }
-        if (!preg_match('/^' . $regex . '$/', $phoneNumber)) {
+        if (!\preg_match('/^' . $regex . '$/', $phoneNumber)) {
             throw new \InvalidArgumentException('Invalid phone number');
         }
 

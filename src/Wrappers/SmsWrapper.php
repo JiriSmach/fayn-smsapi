@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Wrappers;
 
+use DateTimeInterface;
 use InvalidArgumentException;
 use JiriSmach\FaynSmsApi\Helpers\Numbers;
 use JiriSmach\FaynSmsApi\SmsInterface;
@@ -17,7 +18,7 @@ class SmsWrapper implements SmsInterface
     private string $sender = '';
     private string $textId = '';
     private bool $priority = false;
-    private string $sendAt = '';
+    private int $sendAt;
     private string $status = '';
     private string $deliveredAt = '';
     private string $receivedAt = '';
@@ -27,6 +28,7 @@ class SmsWrapper implements SmsInterface
     public function __construct()
     {
         $this->numberHelper = new Numbers();
+        $this->setDefaultValues();
     }
 
     /**
@@ -35,20 +37,20 @@ class SmsWrapper implements SmsInterface
     public function getData(): array
     {
         return [
-            'aNumber' => $this->sender, //sender
+            'aNumber' => $this->sender,
             'textId' => $this->textId,
-            'bNumber' => $this->reciever, //reciever
+            'bNumber' => $this->reciever,
             'messageType' => self::SMS_TYPE,
             'text' => $this->text,
             'priority' => $this->priority,
-            'sendAt' => $this->sendAt, // dateTime
+            'sendAt' => (string)$this->sendAt,
             'externalId' => $this->id,
         ];
     }
 
     public function setId(string $id): self
     {
-        if (mb_strlen($id) > 36) {
+        if (\mb_strlen($id) > 36) {
             throw new \LengthException('Maximum is 36 chars.');
         }
         $this->id = $id;
@@ -108,9 +110,9 @@ class SmsWrapper implements SmsInterface
         return $this;
     }
 
-    public function setSendAt(string $sendAt): self
+    public function setSendAt(DateTimeInterface $sendAt): self
     {
-        $this->sendAt = $sendAt;
+        $this->sendAt = $sendAt->getTimestamp();
 
         return $this;
     }
@@ -201,5 +203,10 @@ class SmsWrapper implements SmsInterface
     public function getRead(): bool
     {
         return $this->read;
+    }
+
+    private function setDefaultValues(): void
+    {
+        $this->sendAt = \time();
     }
 }

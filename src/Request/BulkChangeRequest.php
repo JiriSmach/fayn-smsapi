@@ -49,4 +49,12 @@ class BulkChangeRequest implements RequestInterface
     {
         return self::METHOD_POST;
     }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function getData(): array
+    {
+        return [];
+    }
 }

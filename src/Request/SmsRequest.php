@@ -8,6 +8,9 @@ use JiriSmach\FaynSmsApi\RequestInterface;
 
 abstract class SmsRequest implements RequestInterface
 {
+    /** @var array<string, array<string, mixed>> */
+    protected array $data = [];
+
     abstract public function getBodyJson(): string;
 
     abstract public function getMethod(): string;
@@ -23,5 +26,13 @@ abstract class SmsRequest implements RequestInterface
     public function getPath(): string
     {
         return 'sms/';
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function getData(): array
+    {
+        return $this->data;
     }
 }

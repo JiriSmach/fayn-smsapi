@@ -19,10 +19,8 @@ class Connection
     private ?string $token = null;
     private const URL = 'https://smsapi.fayn.cz/mex/%method%';
 
-    public function __construct(
-        string $username,
-        #[SensitiveParameter] string $password,
-    ) {
+    public function __construct(string $username, #[SensitiveParameter] string $password)
+    {
         $this->username = $username;
         $this->password = $password;
     }
@@ -122,14 +120,14 @@ class Connection
      */
     private function getUrl(RequestInterface $requestInterface): string
     {
-        $url = str_replace('%method%', $requestInterface->getPath(), self::URL);
-        $url_parts = parse_url($url);
+        $url = \str_replace('%method%', $requestInterface->getPath(), self::URL);
+        $url_parts = \parse_url($url);
         $params = $requestInterface->getUrlParams();
         if (isset($url_parts['query'])) {
-            parse_str($url_parts['query'], $params);
+            \parse_str($url_parts['query'], $params);
         }
 
-        $url_parts['query'] = http_build_query($params);
+        $url_parts['query'] = \http_build_query($params);
 
         return $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'] . '?' . $url_parts['query'];
     }

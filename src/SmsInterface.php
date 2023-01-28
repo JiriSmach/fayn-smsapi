@@ -15,4 +15,6 @@ interface SmsInterface
      * @return array<string, string>
      */
     public function getData(): array;
+
+    public function getId(): string;
 }
