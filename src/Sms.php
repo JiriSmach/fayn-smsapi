@@ -30,15 +30,12 @@ class Sms
     public function sendSms(array $smsInterface): SmsWrapper
     {
         $smsRequest = new SmsSendRequest($smsInterface);
-        \var_dump($smsRequest->getBodyJson());
         $response = $this->connection->doRequest($smsRequest);
 
         $responseArray = Utils::jsonDecode(
             $response->getBody()?->getContents() ?: '',
             true,
         );
-
-        \var_dump($responseArray);
 
         return $this->createSmsFromResponse($responseArray);
     }
