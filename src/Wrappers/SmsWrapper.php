@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Wrappers;
 
+use DateTime;
 use DateTimeInterface;
 use InvalidArgumentException;
 use JiriSmach\FaynSmsApi\Helpers\Numbers;
@@ -18,10 +19,10 @@ class SmsWrapper implements SmsInterface
     private string $sender = '';
     private string $textId = '';
     private bool $priority = false;
-    private int $sendAt;
+    private DateTimeInterface $sendAt;
     private string $status = '';
-    private string $deliveredAt = '';
-    private string $receivedAt = '';
+    private ?DateTimeInterface $deliveredAt = null;
+    private ?DateTimeInterface $receivedAt = null;
     private bool $read = false;
     private Numbers $numberHelper;
 
@@ -43,7 +44,7 @@ class SmsWrapper implements SmsInterface
             'messageType' => self::SMS_TYPE,
             'text' => $this->text,
             'priority' => $this->priority,
-            'sendAt' => (string)$this->sendAt,
+            'sendAt' => (string)$this->sendAt->getTimestamp(),
             'externalId' => $this->id,
         ];
     }
@@ -112,7 +113,7 @@ class SmsWrapper implements SmsInterface
 
     public function setSendAt(DateTimeInterface $sendAt): self
     {
-        $this->sendAt = $sendAt->getTimestamp();
+        $this->sendAt = $sendAt;
 
         return $this;
     }
@@ -124,14 +125,14 @@ class SmsWrapper implements SmsInterface
         return $this;
     }
 
-    public function setDeliveredAt(string $deliveryAt): self
+    public function setDeliveredAt(DateTimeInterface $deliveryAt): self
     {
         $this->deliveredAt = $deliveryAt;
 
         return $this;
     }
 
-    public function setReceivedAt(string $receivedAt): self
+    public function setReceivedAt(DateTimeInterface $receivedAt): self
     {
         $this->receivedAt = $receivedAt;
 
@@ -180,7 +181,7 @@ class SmsWrapper implements SmsInterface
         return $this->priority;
     }
 
-    public function getSendAt(): string
+    public function getSendAt(): DateTimeInterface
     {
         return $this->sendAt;
     }
@@ -190,12 +191,12 @@ class SmsWrapper implements SmsInterface
         return $this->status;
     }
 
-    public function getDeliveredAt(): string
+    public function getDeliveredAt(): ?DateTimeInterface
     {
         return $this->deliveredAt;
     }
 
-    public function getReceivedAt(): string
+    public function getReceivedAt(): ?DateTimeInterface
     {
         return $this->receivedAt;
     }
@@ -207,6 +208,6 @@ class SmsWrapper implements SmsInterface
 
     private function setDefaultValues(): void
     {
-        $this->sendAt = \time();
+        $this->sendAt = new DateTime();
     }
 }

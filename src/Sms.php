@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi;
 
+use DateTime;
 use DateTimeInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Utils;
@@ -107,9 +108,17 @@ class Sms
         $smsWrapper->setReceiver($data['bNumber'] ?? '');
         $smsWrapper->setText($data['text'] ?? '');
         $smsWrapper->setPriority($data['priority'] ?? '');
-        $smsWrapper->setSendAt($data['sendAt'] ?? '');
+        if (!empty($data['sendAt'] ?? '')) {
+            $sendAt = new DateTime();
+            $sendAt->setTimestamp($data['sendAt']);
+            $smsWrapper->setSendAt($sendAt);
+        }
         $smsWrapper->setStatus($data['status'] ?? '');
-        $smsWrapper->setDeliveredAt($data['deliveredAt'] ?? '');
+        if (!empty($data['deliveredAt'] ?? '')) {
+            $deliveredAt = new DateTime();
+            $deliveredAt->setTimestamp($data['deliveredAt']);
+            $smsWrapper->setDeliveredAt($deliveredAt);
+        }
 
         return $smsWrapper;
     }
