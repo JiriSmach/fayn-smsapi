@@ -1,14 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace JiriSmach\Tests\FaynSmsApi\Helpers;
 
-use InvalidArgumentException;
 use JiriSmach\FaynSmsApi\Helpers\Numbers;
 use PHPUnit\Framework\TestCase;
 
 class NumberTest extends TestCase
 {
-    public function testValidatePhoneNumberException()
+    public function testValidatePhoneNumberException(): void
     {
         $numbers = new Numbers();
         $this->assertSame($numbers->validatePhoneNumber('00420777777777'), '00420777777777');
@@ -22,7 +23,7 @@ class NumberTest extends TestCase
         $this->assertSame($numbers->validatePhoneNumber('+81-426-32-8510'), '0081426328510');
         $this->assertSame($numbers->validatePhoneNumber('+257 430 5019'), '002574305019');
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $numbers->validatePhoneNumber('+420 aaa aaa aaa');
         $numbers->validatePhoneNumber('+420 777 # 777 777');
         $numbers->validatePhoneNumber('+257 430 5019', [420]);

@@ -17,9 +17,8 @@ class SmsWrapper implements SmsInterface
     private string $reciever = '';
     private string $text = '';
     private string $sender = '';
-    private string $textId = '';
     private bool $priority = false;
-    private DateTimeInterface $sendAt;
+    private ?DateTimeInterface $sendAt = null;
     private string $status = '';
     private ?DateTimeInterface $deliveredAt = null;
     private ?DateTimeInterface $receivedAt = null;
@@ -29,7 +28,6 @@ class SmsWrapper implements SmsInterface
     public function __construct()
     {
         $this->numberHelper = new Numbers();
-        $this->setDefaultValues();
     }
 
     /**
@@ -37,16 +35,25 @@ class SmsWrapper implements SmsInterface
      */
     public function getData(): array
     {
-        return [
-            'aNumber' => $this->sender,
-            'textId' => $this->textId,
+        $returnArray = [
             'bNumber' => $this->reciever,
             'messageType' => self::SMS_TYPE,
             'text' => $this->text,
             'priority' => $this->priority,
-            'sendAt' => (string)$this->sendAt->getTimestamp(),
-            'externalId' => $this->id,
         ];
+
+        if ($this->sendAt) {
+            $returnArray['sendAt'] = (string)$this->sendAt->getTimestamp();
+        }
+        if ($this->id) {
+            $returnArray['externalId'] = $this->id;
+        }
+
+        if ($this->sender) {
+            $returnArray['aNumber'] = $this->sender;
+        }
+
+        return $returnArray;
     }
 
     public function setId(string $id): self
@@ -97,13 +104,6 @@ class SmsWrapper implements SmsInterface
         return $this;
     }
 
-    public function setTextId(string $textId): self
-    {
-        $this->textId = $textId;
-
-        return $this;
-    }
-
     public function setPriority(bool $priority): self
     {
         $this->priority = $priority;
@@ -146,7 +146,7 @@ class SmsWrapper implements SmsInterface
         return $this;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -204,10 +204,5 @@ class SmsWrapper implements SmsInterface
     public function getRead(): bool
     {
         return $this->read;
-    }
-
-    private function setDefaultValues(): void
-    {
-        $this->sendAt = new DateTime();
     }
 }
