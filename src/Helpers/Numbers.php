@@ -36,7 +36,7 @@ class Numbers
             $regex = '(' . \implode('|', $calingCodes) . ')([0-9]{8,15})';
         }
         if (!\preg_match('/^' . $regex . '$/', $phoneNumber)) {
-            throw new \InvalidArgumentException('Invalid phone number');
+            throw new \InvalidArgumentException('Invalid phone number: ' . $phoneNumber);
         }
 
         return $phoneNumber;

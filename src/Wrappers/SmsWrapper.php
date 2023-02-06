@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace JiriSmach\FaynSmsApi\Wrappers;
 
-use DateTime;
 use DateTimeInterface;
 use InvalidArgumentException;
 use JiriSmach\FaynSmsApi\Helpers\Numbers;
@@ -23,6 +22,7 @@ class SmsWrapper implements SmsInterface
     private ?DateTimeInterface $deliveredAt = null;
     private ?DateTimeInterface $receivedAt = null;
     private bool $read = false;
+    private string $textId = '';
     private Numbers $numberHelper;
 
     public function __construct()
@@ -73,6 +73,9 @@ class SmsWrapper implements SmsInterface
      */
     public function setReceiver(string $receiver): self
     {
+        if (empty($receiver)) {
+            return $this;
+        }
         $this->reciever = $this->numberHelper->validatePhoneNumber($receiver, [420]);
 
         return $this;
@@ -99,6 +102,9 @@ class SmsWrapper implements SmsInterface
      */
     public function setSender(string $sender): self
     {
+        if (empty($sender)) {
+            return $this;
+        }
         $this->sender = $this->numberHelper->validatePhoneNumber($sender, [420]);
 
         return $this;
@@ -142,6 +148,13 @@ class SmsWrapper implements SmsInterface
     public function setRead(bool $read): self
     {
         $this->read = $read;
+
+        return $this;
+    }
+
+    public function setTextId(string $textId): self
+    {
+        $this->textId = $textId;
 
         return $this;
     }

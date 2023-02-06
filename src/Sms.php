@@ -107,7 +107,7 @@ class Sms
         $smsWrapper->setTextId($data['textId'] ?? '');
         $smsWrapper->setReceiver($data['bNumber'] ?? '');
         $smsWrapper->setText($data['text'] ?? '');
-        $smsWrapper->setPriority($data['priority'] ?? '');
+        $smsWrapper->setPriority((bool)($data['priority'] ?? false));
         if (!empty($data['sendAt'] ?? '')) {
             $sendAt = new DateTime();
             $sendAt->setTimestamp($data['sendAt']);
