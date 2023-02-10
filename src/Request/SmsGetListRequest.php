@@ -29,11 +29,11 @@ class SmsGetListRequest extends SmsRequest
     {
         $params = [];
         if ($this->datetimeFrom) {
-            $params['timeFrom'] = $this->datetimeFrom->format(DateTimeInterface::ATOM);
+            $params['timeFrom'] = $this->datetimeFrom->format(Connection::DATETIMEFORMAT);
         }
 
         if ($this->datetimeTo) {
-            $params['timeTo'] = $this->datetimeTo->format(DateTimeInterface::ATOM);
+            $params['timeTo'] = $this->datetimeTo->format(Connection::DATETIMEFORMAT);
         }
 
         return $params;

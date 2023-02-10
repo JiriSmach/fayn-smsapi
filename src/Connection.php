@@ -17,6 +17,7 @@ class Connection
     private string $username;
     private string $password;
     private ?string $token = null;
+    public const DATETIMEFORMAT = 'Y-m-d\TH:i:s';
     private const URL = 'https://smsapi.fayn.cz/mex/%method%';
 
     public function __construct(string $username, #[SensitiveParameter] string $password)

@@ -35,11 +35,11 @@ class Statistics
     ): StatisticsDataWrapper {
         $statisticsRequest = new StatisticsRequest($userId);
         if ($from) {
-            $statisticsRequest->addUrlParam('creditHistoryFrom', $from->format(DateTimeInterface::ATOM));
+            $statisticsRequest->addUrlParam('creditHistoryFrom', $from->format(Connection::DATETIMEFORMAT));
         }
 
         if ($to) {
-            $statisticsRequest->addUrlParam('creditHistoryTo', $to->format(DateTimeInterface::ATOM));
+            $statisticsRequest->addUrlParam('creditHistoryTo', $to->format(Connection::DATETIMEFORMAT));
         }
 
         $response = $this->connection->doRequest($statisticsRequest);
